@@ -1,6 +1,4 @@
-# P8
-
-# Plateforme pour amateurs pour Nutella
+# P8 - Plateforme pour amateurs pour Nutella
 
 ## Description
 
@@ -9,7 +7,7 @@ Ce dépôt contient une application web classique dont la principale fonctionnal
 Fonctionnalités :
 - Remplacement d'un aliment par un équivalent sain. Entrez le nom de l'aliment dans le champ de recherche de la page d'acceuil, le site vous donnera un aliment de la même catégorie plus sain
 - Fiches produit : informez vous sur les aliments de votre choix
-- Espace perso : pour enregistrer les substituts sains trouvés au fil de vos recherche
+- Espace perso : pour enregistrer les substituts sains trouvés au fil de vos recherches
 
 ## Composants logiciels requis
 
