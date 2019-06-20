@@ -1,4 +1,4 @@
-# P8 - Plateforme pour amateurs pour Nutella
+# P8 - Plateforme pour amateurs de Nutella
 
 ## Description
 
