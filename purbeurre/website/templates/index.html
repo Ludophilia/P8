@@ -32,15 +32,22 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
     <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top">
-        <img src="{% static 'img/logo_pur_beurre.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+
+      <a class="navbar-brand js-scroll-trigger" href="#page-top"> 
+        <img src="{% static 'img/logo_pur_beurre.png' %}" width="30" height="30" class="align-top mr-auto" alt="">
         Pur Beurre
       </a>
+      
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto my-2 my-lg-0">
+
+        <ul class="navbar-nav my-2 my-lg-0 ml-auto"> <!-- ici le ml-auto Level 3 -->
+          <form class="form-inline"> <!-- Pas terrible le menu dans le <ul> -->
+              <input class="search-menu form-control mr-sm-2" type="search" placeholder="Chercher" aria-label="Search">
+          </form>
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="#"> <i class="fas fa-user"></i></a>
           </li>
@@ -51,6 +58,7 @@
             <a class="nav-link js-scroll-trigger" href="#"><i class="fas fa-sign-out-alt"></i></a>
           </li>
         </ul>
+
       </div>
     </div>
   </nav>
@@ -87,7 +95,7 @@
       <hr class="divider my-4">
      
       <div class="row justify-content-center text-center">
-        <p class="col-lg-8 col-10 text-white-50 mb-0">Rémy et Colette sont deux restaurateurs de renom. Abattus par les difficultés que rencontraient leurs clients et eux mêmes à trouver des substituts aux produits peu nutritifs qu'ils consomment au quotidien, ces deux amoureux de gastronomie française se sont lancés un nouveau défi : permettre le remplacement d'un produit du quotidien par un autre plus sain en quelques clics. Recherchez le produit de votre choix dans la barre de recherche ci-dessus et voyez le résultat de leur travail. Bon appétit !!</p>
+        <p class="col-lg-8 col-10 text-white-50 mb-0">Rémy et Colette sont deux restaurateurs de renom. Abattus par les difficultés que rencontraient leurs clients et eux mêmes à trouver des substituts aux produits peu nutritifs qu'ils consommaient au quotidien, ces deux amoureux de gastronomie française se sont lancés un nouveau défi : permettre le remplacement d'un produit du quotidien par un autre plus sain en quelques clics. Recherchez le produit de votre choix dans la barre de recherche ci-dessus et voyez le résultat de leur travail. Bon appétit !!</p>
       </div>
       <div class="row">
         <div class="col-lg-6 col-md-6 text-center">

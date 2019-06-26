@@ -2029,6 +2029,14 @@ pre code {
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
 }
 
+/* Ajouté par votre humble serviteur. Destiné à écraser la même valeur dans form-control */
+.search-menu {
+  height: calc(1.35em + 0.5rem + 0px);
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+
 @media (prefers-reduced-motion: reduce) {
   .form-control {
     -webkit-transition: none;
