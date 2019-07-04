@@ -9,10 +9,10 @@ class Product(models.Model):
     category = models.CharField(max_length=200)
 
     class Meta:
-        db_table = "Product"
+        db_table = "product"
 
 class NutritionPanel(models.Model):
-    product_id = models.OneToOneField(Product, to_field="product_id", primary_key = True, on_delete = models.CASCADE)
+    product = models.OneToOneField(Product, to_field="product_id", primary_key = True, on_delete = models.CASCADE)
     nutriscore = models.CharField(max_length=1)
     energy_100g = models.DecimalField(max_digits=7, decimal_places=2)
     energy_unit = models.CharField(max_length=5)
@@ -32,15 +32,15 @@ class NutritionPanel(models.Model):
     salt_unit = models.CharField(max_length=2)
 
     class Meta:
-        db_table = "NutritionPanel"
+        db_table = "nutrition_panel"
 
 class Media(models.Model):
-    product_id = models.OneToOneField(Product, to_field="product_id", primary_key=True, on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, to_field="product_id", primary_key=True, on_delete=models.CASCADE)
     image_front_url = models.TextField()
     image_back_url = models.TextField()
 
     class Meta:
-        db_table = "Media"
+        db_table = "media"
 
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
@@ -50,13 +50,13 @@ class User(models.Model):
     password = models.CharField(max_length=48)
 
     class Meta:
-        db_table = "User"
+        db_table = "user"
 
 class Record(models.Model):
     record_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User, to_field="user_id", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, to_field="user_id", on_delete=models.CASCADE)
     product_recorded = models.ForeignKey(Product, to_field="product_id", on_delete=models.CASCADE, related_name='product_recorded_set')
     product_searched = models.ForeignKey(Product, to_field="product_id", on_delete=models.CASCADE, related_name='product_searched_set')
 
     class Meta:
-        db_table = "Record"     
+        db_table = "record"     
