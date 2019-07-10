@@ -1,5 +1,6 @@
 from django.test import TestCase, Client
-from selenium import webdriver
+# from selenium import webdriver
+from website.management.commands.add_data import Command #Mon dieu, mais ça marche
 
 # Create your tests here.
 
@@ -19,3 +20,7 @@ class TestWebsite(TestCase): #Nom à changer
         # self.driver.get("localhost:8943")
         response = self.client.get('')
         self.assertEqual(response.status_code, 200)
+
+    def test_002(self):
+        command = Command()
+        command.handle()

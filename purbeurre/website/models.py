@@ -15,9 +15,9 @@ class NutritionPanel(models.Model):
     product = models.OneToOneField(Product, to_field="product_id", primary_key = True, on_delete = models.CASCADE)
     nutriscore = models.CharField(max_length=1)
     energy_100g = models.DecimalField(max_digits=7, decimal_places=2)
-    energy_unit = models.CharField(max_length=5)
+    # energy_unit = models.CharField(max_length=5)
     proteins_100g = models.DecimalField(max_digits=6, decimal_places=2)
-    proteins_unit = models.CharField(max_length=5)
+    # proteins_unit = models.CharField(max_length=5)
     fat_100g = models.DecimalField(max_digits=6, decimal_places=2)
     fat_unit = models.CharField(max_length=2)
     saturated_fat_100g = models.DecimalField(max_digits=6, decimal_places=2)
@@ -37,7 +37,7 @@ class NutritionPanel(models.Model):
 class Media(models.Model):
     product = models.OneToOneField(Product, to_field="product_id", primary_key=True, on_delete=models.CASCADE)
     image_front_url = models.TextField()
-    image_back_url = models.TextField()
+    image_back_url = models.TextField() #more like: image_thumb_url
 
     class Meta:
         db_table = "media"
