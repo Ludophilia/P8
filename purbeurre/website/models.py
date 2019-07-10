@@ -15,21 +15,14 @@ class NutritionPanel(models.Model):
     product = models.OneToOneField(Product, to_field="product_id", primary_key = True, on_delete = models.CASCADE)
     nutriscore = models.CharField(max_length=1)
     energy_100g = models.DecimalField(max_digits=7, decimal_places=2)
-    # energy_unit = models.CharField(max_length=5)
+    energy_unit = models.CharField(max_length=5)
     proteins_100g = models.DecimalField(max_digits=6, decimal_places=2)
-    # proteins_unit = models.CharField(max_length=5)
     fat_100g = models.DecimalField(max_digits=6, decimal_places=2)
-    fat_unit = models.CharField(max_length=2)
     saturated_fat_100g = models.DecimalField(max_digits=6, decimal_places=2)
-    saturated_fat_unit = models.CharField(max_length=2)
     carbohydrates_100g = models.DecimalField(max_digits=6, decimal_places=2)
-    carbohydrates_unit = models.CharField(max_length=2)
     sugars_100g = models.DecimalField(max_digits=6, decimal_places=2)
-    sugars_unit = models.CharField(max_length=2)
     fiber_100g = models.DecimalField(max_digits=6, decimal_places=2)
-    fiber_unit = models.CharField(max_length=2)
     salt_100g = models.DecimalField(max_digits=6, decimal_places=2)
-    salt_unit = models.CharField(max_length=2)
 
     class Meta:
         db_table = "nutrition_panel"
@@ -37,7 +30,7 @@ class NutritionPanel(models.Model):
 class Media(models.Model):
     product = models.OneToOneField(Product, to_field="product_id", primary_key=True, on_delete=models.CASCADE)
     image_front_url = models.TextField()
-    image_back_url = models.TextField() #more like: image_thumb_url
+    image_thumb_url = models.TextField() 
 
     class Meta:
         db_table = "media"
@@ -59,4 +52,4 @@ class Record(models.Model):
     product_searched = models.ForeignKey(Product, to_field="product_id", on_delete=models.CASCADE, related_name='product_searched_set')
 
     class Meta:
-        db_table = "record"     
+        db_table = "record"
