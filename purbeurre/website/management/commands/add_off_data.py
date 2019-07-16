@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from website.models import Product, NutritionPanel, Media
+from website.models import Product, Nutrition, Media
 import requests, os, re
 
 class Command(BaseCommand):
@@ -72,7 +72,7 @@ class Command(BaseCommand):
                         image_thumb_url = get_product_data(product, "image_thumb_url")
                     )
 
-                    NutritionPanel.objects.create(
+                    Nutrition.objects.create(
                         product = product_entry,
                         nutriscore = get_product_data(product, "nutrition_grade_fr"),
                         energy_100g = get_product_data(product, "energy_100g"),
@@ -86,12 +86,13 @@ class Command(BaseCommand):
                         salt_100g = get_product_data(product, "salt_100g")
                     )
 
-        for product in Product.objects.all():
-            print("Product:", product.product_id, product.product_name, product.category)
-        
-        for media in Media.objects.all():
-            print("Media:", media.product, media.image_front_url, media.image_thumb_url)
+        def show_data():
+            for product in Product.objects.all():
+                print("Product:", product.product_id, product.product_name, product.category)
+            
+            for media in Media.objects.all():
+                print("Media:", media.product, media.image_front_url, media.image_thumb_url)
 
-        for nutriment in NutritionPanel.objects.all():
-            print("Nutrition:", nutriment.product, nutriment.nutriscore, nutriment.energy_100g, nutriment.energy_unit,
-            nutriment.proteins_100g, nutriment.fat_100g, nutriment.saturated_fat_100g, nutriment.carbohydrates_100g, nutriment.sugars_100g, nutriment.fiber_100g, nutriment.salt_100g)
+            for nutriment in Nutrition.objects.all():
+                print("Nutrition:", nutriment.product, nutriment.nutriscore, nutriment.energy_100g, nutriment.energy_unit,
+                nutriment.proteins_100g, nutriment.fat_100g, nutriment.saturated_fat_100g, nutriment.carbohydrates_100g, nutriment.sugars_100g, nutriment.fiber_100g, nutriment.salt_100g)

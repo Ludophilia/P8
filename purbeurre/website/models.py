@@ -8,10 +8,13 @@ class Product(models.Model):
     off_url = models.TextField()
     category = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.product_name
+
     class Meta:
         db_table = "product"
 
-class NutritionPanel(models.Model):
+class Nutrition(models.Model):
     product = models.OneToOneField(Product, to_field="product_id", primary_key = True, on_delete = models.CASCADE)
     nutriscore = models.CharField(max_length=1)
     energy_100g = models.DecimalField(max_digits=7, decimal_places=2)
@@ -24,8 +27,11 @@ class NutritionPanel(models.Model):
     fiber_100g = models.DecimalField(max_digits=6, decimal_places=2)
     salt_100g = models.DecimalField(max_digits=6, decimal_places=2)
 
+    def __str__(self):
+        return "Objet nutrition lié à {}".format(self.product.product_name)
+
     class Meta:
-        db_table = "nutrition_panel"
+        db_table = "nutrition"
 
 class Media(models.Model):
     product = models.OneToOneField(Product, to_field="product_id", primary_key=True, on_delete=models.CASCADE)

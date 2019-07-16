@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 
+{{% block head %}}
+
 <head>
 
   <meta charset="utf-8">
@@ -8,7 +10,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>P8 - Plateforme pour Amateurs de Nutella</title>
+  <title>{{ var.title }}</title>
 
   {% load static %}
 
@@ -29,6 +31,8 @@
   <link href="{% static 'css/creative.css' %}" rel="stylesheet">
 
 </head>
+
+{{% endblock %}}
 
 <body id="page-top"> 
 
