@@ -33,12 +33,14 @@ class Command(BaseCommand):
 
             try:
                 if value in type1_values:
-                    return product_dict[value]
+                    if value == "image_front_url":
+                        return product_dict[value].replace(".400.jpg", ".full.jpg")
+                    else:
+                        return product_dict[value]
                 else:
                     return product_dict["nutriments"][value]
 
             except (KeyError):
-
                 if re.search(r'^.{3,13}_100g$',value):
                     return -999.99
                 elif re.search(r'^.{3,13}_unit$',value):
@@ -86,13 +88,19 @@ class Command(BaseCommand):
                         salt_100g = get_product_data(product, "salt_100g")
                     )
 
-        def show_data():
+    def show_data(self, type_data):
+        
+        if type_data == "product_data":
             for product in Product.objects.all():
                 print("Product:", product.product_id, product.product_name, product.category)
-            
+        
+        if type_data == "media_data":
             for media in Media.objects.all():
-                print("Media:", media.product, media.image_front_url, media.image_thumb_url)
+                # print("Media:", media.product, media.image_front_url, media.image_thumb_url)
+                print("Media:", media.image_front_url)
 
+        
+        if type_data == "nutrition_data":
             for nutriment in Nutrition.objects.all():
                 print("Nutrition:", nutriment.product, nutriment.nutriscore, nutriment.energy_100g, nutriment.energy_unit,
                 nutriment.proteins_100g, nutriment.fat_100g, nutriment.saturated_fat_100g, nutriment.carbohydrates_100g, nutriment.sugars_100g, nutriment.fiber_100g, nutriment.salt_100g)

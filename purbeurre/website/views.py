@@ -6,5 +6,6 @@ def home(request):
     return render(request, "index.html", var)
 
 def results(request):
-    var = {'title': "Resultats de la recherche"}
+    var = {'title': "Resultats de la recherche", 
+            'loops': range(6)}
     return render(request, "results.html", var)

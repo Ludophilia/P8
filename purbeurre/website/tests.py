@@ -20,6 +20,20 @@ class TestWebsite(TestCase):
         response = self.client.get('')
         self.assertEqual(response.status_code, 200) # Verifier que l'adresse est la bonne. Ou plutôt qu'on arrive à l'atteindre. #Code 200.
 
+class TestProductAddition(TestCase):
+    
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass 
+
+    @tag("addition")
+    def test_what_handle_returns(self):
+        command = Command()
+        command.handle() #Builds the database
+        command.show_data("media_data")
+
 class TestProductSelector(TestCase):
     
     def setUp(self):
