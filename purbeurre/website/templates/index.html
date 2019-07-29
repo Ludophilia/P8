@@ -15,12 +15,12 @@
           <h2 class="text-white-75 font-weight-light">Trouvez un produit de substitution à ceux que vous consommez tous les jours</h2>
         </div>
         <div class="col-lg-12 mt-4 align-self-start">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Produit" aria-label="Produit" aria-describedby="searchbar02">
+          <form class="input-group" method="GET" action="/search">
+            <input type="search" class="form-control" placeholder="Produit" name="query">
             <div class="input-group-append"> 
-              <button class="btn btn-primary" type="button" id="searchbar02">Chercher</button>
+              <button class="btn btn-primary" type="submit" id="searchbar02">Chercher</button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

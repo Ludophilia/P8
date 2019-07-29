@@ -3,6 +3,8 @@ from website.models import Product, Nutrition
 from website.management.commands.add_off_data import Command
 from website.product_selector import replacement_picker, sugary_product_categories
 import random
+from website.views import results
+
 # from selenium import webdriver
 
 # Create your tests here.
@@ -28,7 +30,7 @@ class TestProductAddition(TestCase):
     def tearDown(self):
         pass 
 
-    @tag("addition")
+    @tag("db_addition")
     def test_what_handle_returns(self):
         command = Command()
         command.handle() #Builds the database
@@ -43,13 +45,43 @@ class TestProductSelector(TestCase):
     def tearDown(self):
         pass 
 
-    @tag("substitution")
-    def test_if_replacement_picker_works_swell(self):
+    @tag("check")
+    def test_if_replacement_picker_only_accepts_int(self):
+        product_id = random.randint(0, len(Product.objects.all())-1)
+        random_product = Product.objects.get(pk=product_id)
+        
+        with self.assertRaises(TypeError):
+            substitute = replacement_picker(random_product, "a", "b")
+
+    @tag("not-really-a-test")
+    def test_what_products_replacement_picker_gives_to_the_user(self):
+        product_id = random.randint(0, len(Product.objects.all())-1)
+        
+        random_product = Product.objects.get(pk=product_id)
+        substitute = replacement_picker(random_product, 0, 6)
+
+        print("Produit:",
+            random_product.product_name,
+            random_product.nutrition.nutriscore,
+            random_product.nutrition.saturated_fat_100g,
+            random_product.nutrition.sugars_100g,
+            random_product.nutrition.salt_100g)
+
+        for substitute in substitute: 
+            print("Substitut:",
+                substitute.product_name,
+                substitute.nutrition.nutriscore,
+                substitute.nutrition.saturated_fat_100g,
+                substitute.nutrition.sugars_100g,
+                substitute.nutrition.salt_100g)
+
+    @tag("best-result")
+    def test_if_the_first_replacement_prodiuct_is_better_from_a_nutrition_standpoint(self):
     
         product_id = random.randint(0, len(Product.objects.all())-1)
         
         random_product = Product.objects.get(pk=product_id)
-        substitute = replacement_picker(random_product) #  Determiner produit avec replacement_picker
+        substitute = replacement_picker(random_product, 0,1) #  Determiner produit avec replacement_picker
 
         print(random_product.product_name,
             random_product.nutrition.nutriscore,
@@ -74,3 +106,16 @@ class TestProductSelector(TestCase):
             self.assertLessEqual(substitute.nutrition.sugars_100g, random_product.nutrition.sugars_100g)
         else:
             self.assertLessEqual(substitute.nutrition.salt_100g, random_product.nutrition.salt_100g)
+
+class TestViewFunctions(TestCase):
+    
+    def setUp(self):
+        command = Command()
+        command.handle() #Builds the database
+
+    def tearDown(self):
+        pass 
+
+    def test_a_def(self):
+        #Analyser ce que recoit la view en query
+        pass

@@ -2,6 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name="home"), # Et si on retire ça ? Ben plus d'urlconf.
-    path('results', views.results, name="results") 
+    path('', views.home, name="home"),
+    path('search', views.results, name="results"),
 ]

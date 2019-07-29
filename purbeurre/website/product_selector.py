@@ -26,30 +26,33 @@ sugary_product_categories = [
     "Fruits en conserve"
     ]
 
-def replacement_picker(product): #product est un produit obtenu via un query selector
+def replacement_picker(product, index_start, index_end): #product est un produit obtenu via un query selector
     
     # Le but : un produit en entrée
+    if type(index_start) == int and type(index_end) == int:
 
-    if product.category in sugary_product_categories: #On peut aussi modifier l'ordre du traitement en fonction des aliments. Les aliments sucres auront un ordre de filtrage different des aliments salés.
+        if product.category in sugary_product_categories: #On peut aussi modifier l'ordre du traitement en fonction des aliments. Les aliments sucres auront un ordre de filtrage different des aliments salés.
 
-        substitute = Product.objects.filter(
-                category__exact=product.category    #Produit de la même category
-            ).order_by(
-                "nutrition__nutriscore",
-                "nutrition__sugars_100g",
-                "nutrition__saturated_fat_100g",
-                "nutrition__salt_100g"
-            )[0]
+            substitute = Product.objects.filter(
+                    category__exact=product.category    #Produit de la même category
+                ).order_by(
+                    "nutrition__nutriscore",
+                    "nutrition__sugars_100g",
+                    "nutrition__saturated_fat_100g",
+                    "nutrition__salt_100g"
+                )[index_start:index_end]
 
+        else:
+            
+            substitute = Product.objects.filter(
+                    category__exact=product.category    #Produit de la même category
+                ).order_by(
+                    "nutrition__nutriscore",
+                    "nutrition__saturated_fat_100g",
+                    "nutrition__salt_100g",
+                    "nutrition__sugars_100g"
+                )[index_start:index_end]
     else:
-
-        substitute = Product.objects.filter(
-                category__exact=product.category    #Produit de la même category
-            ).order_by(
-                "nutrition__nutriscore",
-                "nutrition__saturated_fat_100g",
-                "nutrition__salt_100g",
-                "nutrition__sugars_100g"
-            )[0]
+        raise TypeError("index_start et index_end doivent être des int")
 
     return substitute #Un objet_produit produit plus sain en sortie
