@@ -12,7 +12,7 @@ def home(request):
 
 def results(request):
     
-    query = request.GET['query'] #Afficher le nom de la query bâtonnets de surimi, Orangina, Perrier fines bulles, Pâtes Spaghetti au blé complet, Salade de quinoa aux légumes, Magnum Double Caramel 
+    query = request.GET['query'] #Afficher le nom de la query 
     # print(query)
     
     # products_alike = Product.objects.filter(product_name__iexact=query)
@@ -21,7 +21,7 @@ def results(request):
     product = products_alike[0]
     
     product_name = product.product_name # Alt: product_photo_url = Media.objects.filter(product__product_name=product_name)[0].image_front_url #Afficher photo produit de la query s'il existe
-    product_photo_url = product.media.image_front_url
+    product_photo_url = product.media.image_full_url
 
     substitutes = replacement_picker(product, 0, 6) #Remplacer le produit de la query
 

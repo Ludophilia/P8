@@ -3,8 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Product(models.Model):
-    product_id = models.AutoField(primary_key=True)
-    product_name = models.CharField(max_length=200)
+    product_name = models.CharField(max_length=200, primary_key=True)
     off_url = models.TextField()
     category = models.CharField(max_length=200)
 
@@ -15,7 +14,7 @@ class Product(models.Model):
         db_table = "product"
 
 class Nutrition(models.Model):
-    product = models.OneToOneField(Product, to_field="product_id", primary_key = True, on_delete = models.CASCADE)
+    product = models.OneToOneField(Product, to_field="product_name", primary_key = True, on_delete = models.CASCADE)
     nutriscore = models.CharField(max_length=1)
     energy_100g = models.DecimalField(max_digits=7, decimal_places=2)
     energy_unit = models.CharField(max_length=5)
@@ -34,9 +33,9 @@ class Nutrition(models.Model):
         db_table = "nutrition"
 
 class Media(models.Model):
-    product = models.OneToOneField(Product, to_field="product_id", primary_key=True, on_delete=models.CASCADE)
-    image_front_url = models.TextField()
-    image_thumb_url = models.TextField() 
+    product = models.OneToOneField(Product, to_field="product_name", primary_key=True, on_delete=models.CASCADE)
+    image_full_url = models.TextField() 
+    image_front_url = models.TextField() 
 
     class Meta:
         db_table = "media"
@@ -54,8 +53,8 @@ class User(models.Model):
 class Record(models.Model):
     record_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, to_field="user_id", on_delete=models.CASCADE)
-    product_recorded = models.ForeignKey(Product, to_field="product_id", on_delete=models.CASCADE, related_name='product_recorded_set')
-    product_searched = models.ForeignKey(Product, to_field="product_id", on_delete=models.CASCADE, related_name='product_searched_set')
+    product_recorded = models.ForeignKey(Product, to_field="product_name", on_delete=models.CASCADE, related_name='product_recorded_set')
+    product_searched = models.ForeignKey(Product, to_field="product_name", on_delete=models.CASCADE, related_name='product_searched_set')
 
     class Meta:
         db_table = "record"
