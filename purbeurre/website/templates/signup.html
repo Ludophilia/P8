@@ -1,0 +1,61 @@
+{% extends "base_mfh.html" %}
+{% load static %}
+{% load widget_tweaks %} <!-- Important pour l'app widget_tweaks -->
+
+{% block header_background %} "https://www.sekretaria.de/wp-content/uploads/2002/07/file_cabinet_Fotolia_76590933_Subscription_XXL_Sashkin_Website.jpg" {% endblock %}
+{% block product_name %} Création de compte {% endblock %}
+
+{% block subheader %} <!-- Ici les formulaires -->
+
+<!-- Quel est l'élément pour générer un formulaire
+On cherche quoi comme formulaires
+
+Formulaire Nom
+Formulaire Pseudo
+Formulaire Prénom
+Formulaire Mail
+Formulaire Mot de passe
+Bouton valider
+-->
+<div class="container">
+   
+    <div class="row justify-content-center">
+        <div class="col-9" style="">
+            <h1 class="text-muted" style="font-size:18px; margin-top:40px; margin-bottom:40px; text-align:center"> Entrez vos informations dans le formulaire ci-dessous pour créer un compte</h1>
+        </div>
+    </div>
+
+    <div class="row justify-content-center" style="height:550px">
+        <div class="col-7">
+            <form action="/signup" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.username.label_tag }}
+                    {% render_field form.username class="form-control" placeholder="pseudo"%}
+                </div>
+                <div class="form-group">
+                    {{ form.first_name.label_tag }}
+                    {% render_field form.first_name class="form-control" placeholder="prenom" %}
+                </div>
+                <div class="form-group">
+                    {{ form.last_name.label_tag }}
+                    {% render_field form.last_name class="form-control" placeholder="nom" %}
+                </div>
+                <div class="form-group">
+                    {{ form.mail.label_tag }}
+                    {% render_field form.mail class="form-control" placeholder="untruc@exemple.com" %}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label_tag }}
+                    {% render_field form.password class="form-control" placeholder="onregardepaspromis" %}
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" style="margin-top:20px">
+                    Inscrivez-moi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

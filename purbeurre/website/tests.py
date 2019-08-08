@@ -1,21 +1,26 @@
-from django.test import TestCase, Client, tag
+from django.test import TestCase, Client, tag, SimpleTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase 
+from django.urls import reverse
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
 from website.models import Product, Nutrition, Media
 from website.management.commands.add_off_data import Command
 from website.product_selector import replacement_picker, sugary_product_categories
 from website.views import results
-from decimal import Decimal
 from selenium import webdriver
+from decimal import Decimal
 import os, time, random
 
 # Create your tests here.
 
-class TestExample(TestCase):
+@tag("example")
+class TestExample(SimpleTestCase):
     
     def setUp(self):
-        self.client = Client() # self.driver = webdriver.Chrome('app/tests/chromedriver')
+        self.client = Client()
 
     def tearDown(self):
-        pass # self.driver.quit()
+        pass 
     
     def test_if_the_page_is_at_the_right_address(self):
         
@@ -107,7 +112,7 @@ class TestProductSelectorModule(TestCase):
     
     def setUp(self):
         self.command = Command()
-        self.command.handle() #Builds the database
+        self.command.handle() 
 
     @tag("check")
     def test_if_replacement_picker_only_accepts_int(self):
@@ -149,19 +154,22 @@ class TestProductSelectorModule(TestCase):
         else:
             self.assertLessEqual(substitute.nutrition.salt_100g, random_product.nutrition.salt_100g)
 
-@tag("prorep")
-class TestProductReplacementFunction(TestCase):
+@tag("replacement")
+class TestProductReplacementFunction(StaticLiveServerTestCase):
     
     def setUp(self):
-        self.command = Command()
-        self.command.handle()
         self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)), "chromedriver"))
-
+   
     def tearDown(self):
         self.driver.quit() 
 
+    @tag("repl_working?")
     def test_if_the_product_replacement_is_working_correctly(self):
         #Analyser ce que recoit la view en query
+
+        self.command = Command()
+        self.command.handle()
+
         products = ["bâtonnets de surimi", "Orangina", "Perrier fines bulles", "Pâtes Spaghetti au blé complet", "Salade de quinoa aux légumes", "Magnum Double Caramel"]
         substitutes = ["Filets de Colin Panés", "Perrier fines bulles", "Perrier fines bulles", "Coquillettes", "Betteraves à la Moutarde à l'Ancienne", "Les bios vanille douce sava"]
         i = 0
@@ -170,7 +178,7 @@ class TestProductReplacementFunction(TestCase):
         # print(e.product_name)
 
         for product in products:
-            self.driver.get('http://127.0.0.1:8000')
+            self.driver.get("{}".format(self.live_server_url)) 
 
             searchbox = self.driver.find_element_by_name("query")
             searchbox.send_keys(product)
@@ -185,3 +193,58 @@ class TestProductReplacementFunction(TestCase):
             self.assertLessEqual(ord(substitute_nutriscore), ord(product_nutriscore))
             time.sleep(1)
             i+=1
+        
+    @tag("repl_404")
+    def test_if_404_is_correctly_raised(self):
+        
+        #Problème avec le mini client, une requete normale de type get("search", {"query":"orangina"}) donne une status_code de 404
+
+        # Il existe Sans doute une autre façon de faire, faudrait la trouver
+
+        self.driver.get("{}".format(self.live_server_url)) 
+
+        searchbox = self.driver.find_element_by_name("query")
+        searchbox.send_keys("orangin")
+        searchbox.submit()
+        time.sleep(1)
+
+        error = self.driver.find_element_by_css_selector("h1").text
+        self.assertEqual(error,"Not Found") #En mode débug s'entend
+
+@tag("account")
+class TestUserAccountCreation(StaticLiveServerTestCase):
+    def setUp(self):
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)), "chromedriver"))
+   
+    def tearDown(self):
+        self.driver.quit() 
+
+    def test_if_user_account_data_is_correctly_added_to_the_database(self):
+        
+        user_info = {
+                "username":"lusername",
+                "last_name":"last",
+                "first_name":"first",
+                "mail":"first_last_who_cares@me.com",
+                "password":"mucho_secure"
+            }
+
+        self.driver.get("{}{}".format(self.live_server_url, '/signup'))
+
+        for field in ["username", "first_name", "last_name", "mail", "password"]:
+
+            element = self.driver.find_element_by_name(field)
+            element.send_keys(user_info[field])
+
+            if field == "password":
+                element.submit()
+
+        time.sleep(1)
+        
+        user_added = User.objects.get(username="lusername")
+
+        self.assertEqual(user_added.username, user_info["username"])
+        self.assertEqual(user_added.first_name, user_info["first_name"])
+        self.assertEqual(user_added.last_name, user_info["last_name"])
+        self.assertEqual(user_added.email, user_info["mail"])
+        self.assertTrue(check_password(user_info["password"], user_added.password))
