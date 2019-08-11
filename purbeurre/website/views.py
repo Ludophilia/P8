@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_list_or_404, redirect
 from website.models import Media, Product
 from website.product_selector import replacement_picker
-from website.forms import RegistrationForm
+from website.forms import RegistrationForm, SignInForm
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -50,3 +50,11 @@ def signup(request):
           'form': RegistrationForm()}
     
     return render(request, "signup.html", var)
+
+def signin(request):
+    
+    var = {'title': "Connexion",
+            'form' : SignInForm()
+          }
+
+    return render(request, "signin.html", var)

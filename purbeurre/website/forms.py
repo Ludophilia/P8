@@ -7,6 +7,10 @@ class RegistrationForm(forms.Form):
     mail = forms.EmailField(label='Mail', max_length=50)
     password = forms.CharField(label='Mot de passe', max_length=50, widget=forms.PasswordInput())
 
+class SignInForm(forms.Form):
+    username = forms.CharField(label='Pseudo', max_length=50)
+    password = forms.CharField(label='Mot de passe', max_length=50, widget=forms.PasswordInput())
+
 # Formulaire Nom CharField
 # Formulaire Pseudo CharField
 # Formulaire Prénom CharField

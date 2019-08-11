@@ -1,0 +1,49 @@
+{% extends 'base_mf.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block body %}
+
+<style>
+    section.background {
+    height: 910px;
+    width: 100%;
+    background: linear-gradient(to top, rgba(92, 77, 66, 0.80) 50%, rgba(92, 77, 66, 0.8) 100%), 
+    url({% static "img/hapiness-time-kawin-harasai.jpg" %});
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: cover;
+    filter:blur(0em);
+    transform: scale(1);
+    }  
+</style>
+    
+<section class="background">
+    <div class="container" style="padding-top:72px; height:99%">
+        <div class="row justify-content-center align-items-end" style="height:40%">
+            <div class="col-9">
+                <img src="{% static 'img/logo_pur_beurre.png' %}" width="55" height="55" class="mx-auto d-block" alt="" style="">
+                <h1 class="text-white" style="margin: 10px 0px; text-align:center; font-size:32px" >Se connecter</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-3">
+            <div class="col-lg-3 col-sm-5 col-6">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="form-row"> 
+                        {% render_field form.username placeholder="pseudo" class="form-control mb-2" %}
+                    </div>
+                    <div class="form-row"> 
+                        {% render_field form.password placeholder="mot de passe" class="form-control" %}
+                    </div>
+                    <div class="form-row justify-content-center">
+                        <button type="submit" class="btn btn-primary" style="margin-top:30px">GO</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
