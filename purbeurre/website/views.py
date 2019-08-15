@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_list_or_404, redirect
 from website.models import Media, Product
 from website.product_selector import replacement_picker
-from website.forms import RegistrationForm, SignInForm
+from website.forms import RegistrationForm, SignInForm, AuthenticationFormPlus
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 
 # Create your views here.
 
@@ -53,8 +55,30 @@ def signup(request):
 
 def signin(request):
     
-    var = {'title': "Connexion",
-            'form' : SignInForm()
-          }
+    print("1 Vous êtes connecté en tant que: ", request.user)
 
-    return render(request, "signin.html", var)
+    if request.method == "POST":
+        form = AuthenticationForm(request, request.POST)  
+
+        if form.is_valid():
+
+            user_obj = authenticate(
+                username = form.cleaned_data["username"], 
+                password = form.cleaned_data["password"]
+                ) #test aaa, aaa
+
+            login(request, user_obj)
+
+            if request.user.is_authenticated:
+                print("2 Vous êtes connecté en tant que: ", request.user)
+                return redirect("/")
+
+    else:
+        form = AuthenticationForm(request)
+    
+    vars = {
+        'title': "Connexion",
+        'form' : form 
+        }
+
+    return render(request, "signin.html", vars)

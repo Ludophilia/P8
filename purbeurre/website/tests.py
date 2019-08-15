@@ -248,3 +248,110 @@ class TestUserAccountCreation(StaticLiveServerTestCase):
         self.assertEqual(user_added.last_name, user_info["last_name"])
         self.assertEqual(user_added.email, user_info["mail"])
         self.assertTrue(check_password(user_info["password"], user_added.password))
+
+@tag("connect")
+class TestUserAccountConnectionSeleniumVersion(StaticLiveServerTestCase):
+    def setUp(self):
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)), "chromedriver"))
+    
+    def tearDown(self):
+        self.driver.quit() 
+
+    def test_if_connection_form_displays_the_error_message(self):
+
+        user_info = {
+            "username" : "lusername",
+            "password" : "mucho_secure"
+        }
+
+        self.driver.get("{}/{}".format(self.live_server_url, "signin"))
+        time.sleep(3)
+
+        for field in ["username", "password"]:
+
+            element = self.driver.find_element_by_name(field)
+            element.send_keys(user_info[field])
+
+            if field == "password":
+                element.submit()
+
+        time.sleep(1)
+
+        error_message = "Saisissez un nom d'utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules)."
+
+        error_message_in_webpage = self.driver.find_element_by_css_selector("ul.errorlist li")
+
+        self.assertEqual(error_message, error_message_in_webpage.text)
+    
+    @tag("works")
+    def test_if_connection_works_as_expected(self):
+        
+        user_info = {
+            "username" : "lusername",
+            "password" : "mucho_secure"
+        }
+
+        User.objects.create_user(
+            username = user_info['username'],
+            password = user_info['password']
+        )
+
+        self.driver.get("{}/{}".format(self.live_server_url, "signin"))
+        time.sleep(1)
+
+        for field in ["username", "password"]:
+
+            element = self.driver.find_element_by_name(field)
+            element.send_keys(user_info[field])
+
+            if field == "password":
+                element.submit()
+
+        time.sleep(1)
+
+        self.assertEqual(self.driver.current_url, self.live_server_url+"/")
+
+
+@tag("connect2")
+class TestUserAccountConnection(TestCase):
+    
+    def setUp(self):
+        self.client = Client()
+
+    def tearDown(self):
+        pass
+    
+    @tag("error2")
+    def test_if_connection_form_displays_the_error_message(self):
+
+        user_info = {
+            "username" : "lusername",
+            "password" : "mucho_secure"
+        }
+
+        response = self.client.post(path=reverse("signin"), data=user_info)
+
+        error_message = "Saisissez un nom d&#39;utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules)." #Eeeet oui, on réplique les erreurs
+
+        self.assertIn(error_message, response.content.decode())
+
+    @tag("works2")
+    def test_if_connection_works_as_expected(self):
+        
+        user_info = {
+            "username" : "lusername",
+            "password" : "mucho_secure"
+        }
+
+        User.objects.create_user(
+            username = user_info['username'],
+            password = user_info['password']
+        )
+
+        response = self.client.post(path=reverse("signin"), data=user_info)
+
+        error_message = "Saisissez un nom d&#39;utilisateur et un mot de passe valides. Remarquez que chacun de ces champs est sensible à la casse (différenciation des majuscules/minuscules)."
+
+        self.assertNotIn(error_message, response.content.decode())
+
+        self.assertEqual(response.url, "/") # Juste la partie après le nom de domaine
