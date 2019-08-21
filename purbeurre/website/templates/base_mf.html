@@ -54,14 +54,32 @@
               <input class="search-menu form-control mr-sm-2" type="search" placeholder="Chercher" aria-label="Search">
           </form>
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#"> <i class="fas fa-user"></i></a>
+            <!-- Renvoie toujours vers la page de compte mais celle-ci est login required -->
+            <a class="nav-link js-scroll-trigger" href={% url "account" %}> 
+                <i class="fas fa-user">
+                    {% if user.is_authenticated %} 
+                    <span class="" style="padding-left:5px">Mon compte</span> 
+                    {% else %} 
+                    <span class="" style="padding-left:5px">Se connecter</span>
+                    {% endif %}  
+                </i>
+            </a>
+          </li>
+          {% if user.is_authenticated %} 
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="#">
+                <i class="fas fa-carrot">
+                    <!-- <span class="" style="padding-left:5px">Mes aliments </span>  -->
+                </i>
+            </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#"><i class="fas fa-carrot"></i></a>
+            <a class="nav-link js-scroll-trigger" href={% url "logout" %}>
+                <i class="fas fa-sign-out-alt">
+                </i>
+            </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#"><i class="fas fa-sign-out-alt"></i></a>
-          </li>
+          {% endif %}
         </ul>
       </div>
     </div>

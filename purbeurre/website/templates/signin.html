@@ -40,14 +40,15 @@
                     <div class="form-row justify-content-center">
                         <button type="submit" class="btn btn-primary" style="margin-top:30px">GO</button>
                     </div>
+                    {{ form.non_field_errors }}
                 </form>
-                {{ form.non_field_errors }}
-                <div class="invalid-feedback">
-                    cher
+                <div class="text-white text-center" style="margin-top:20px; font-size:14.5px">
+                    Pas de compte ? <br/> <a href={% url 'signup' %}>Rejoignez-nous ! </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</section>
 
 {% endblock %}

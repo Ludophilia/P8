@@ -8,6 +8,7 @@ from website.management.commands.add_off_data import Command
 from website.product_selector import replacement_picker, sugary_product_categories
 from website.views import results
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
 from decimal import Decimal
 import os, time, random
 
@@ -250,7 +251,7 @@ class TestUserAccountCreation(StaticLiveServerTestCase):
         self.assertTrue(check_password(user_info["password"], user_added.password))
 
 @tag("connect")
-class TestUserAccountConnectionSeleniumVersion(StaticLiveServerTestCase):
+class TestUserAccountConnection(StaticLiveServerTestCase):
     def setUp(self):
         self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)), "chromedriver"))
     
@@ -311,9 +312,8 @@ class TestUserAccountConnectionSeleniumVersion(StaticLiveServerTestCase):
 
         self.assertEqual(self.driver.current_url, self.live_server_url+"/")
 
-
-@tag("connect2")
-class TestUserAccountConnection(TestCase):
+@tag("connectDjango")
+class TestUserAccountConnectionDjangoClientVersion(TestCase):
     
     def setUp(self):
         self.client = Client()
@@ -355,3 +355,182 @@ class TestUserAccountConnection(TestCase):
         self.assertNotIn(error_message, response.content.decode())
 
         self.assertEqual(response.url, "/") # Juste la partie après le nom de domaine
+
+@tag("nav")
+class TestNavBarBehaviour(StaticLiveServerTestCase):    
+    
+    @tag("se-connecter")
+    def test_if_se_connecter_appear_in_menubar_when_the_user_is_not_connected(self):
+        # Tester que qu'il y ait bien marquer se connecter dans le logo de connection
+
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)), "chromedriver"))
+
+        self.driver.get(self.live_server_url)
+        connect_logo = self.driver.find_element_by_css_selector(".fas.fa-user")
+        self.assertEqual(connect_logo.text, "Se connecter")
+
+        self.driver.quit()
+
+    @tag("nav-redirect")
+    def test_if_anonymous_user_is_redirected_to_sign_in_page(self):
+        # Tester que appuyer sur mon compte envoie la page de connexion en mode Anonymous user
+
+        self.client = Client()
+
+        response = self.client.get("/account")
+        self.assertRedirects(response,"/signin?next=/account")
+
+    @tag("mon-compte")
+    def test_if_mon_compte_appear_in_menubar_when_the_user_is_connected(self):
+        # Tester que qu'il y ait bien marquer se connecter dans le logo de connection une fois connecté
+        self.selenium_is_active = True
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)),"chromedriver"))
+        self.driver.get("{}{}".format(self.live_server_url, "/signin"))
+        
+        user_info = {
+            "username" : "lusername",
+            "password" : "mucho_secure"
+        }
+
+        User.objects.create_user(
+            username = user_info['username'],
+            password = user_info['password']
+        )
+
+        for type_field in user_info: 
+            field = self.driver.find_element_by_name(type_field)
+            field.send_keys(user_info[type_field])
+
+            if type_field == "password":
+                field.submit()
+
+        mon_compte = self.driver.find_element_by_css_selector(".fas.fa-user")
+
+        self.assertEqual(mon_compte.text, "Mon compte")
+        self.driver.quit()
+
+    @tag("access")
+    def test_if_a_connected_user_can_access_to_mon_compte_page(self):
+
+        # Tester qu'un utilisateur connecté peut accéder au compte
+
+        self.client = Client()
+
+        user_info = {
+            "username" : "username",
+            "password" : "password"
+        }
+
+        User.objects.create_user(
+            username = user_info["username"],
+            password = user_info["password"]
+        )
+
+        self.client.post("/signin", data=user_info)
+        response = self.client.get("/account")
+
+        self.assertEqual(response.status_code, 200) #Si 200, c'est qu'on a pu accéder, si c'est  c'est 302 c'est qu'il y a eu une redirection
+
+    @tag("deco")
+    def test_if_clicking_on_logout_button_does_logout_the_user(self):
+        
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)), "chromedriver"))
+
+        self.driver.get("{}{}".format(self.live_server_url, "/signin"))
+        
+        user_info = {
+            "username" : "lusername",
+            "password" : "mucho_secure"
+        }
+
+        User.objects.create_user(
+            username = user_info['username'],
+            password = user_info['password']
+        )
+
+        for type_field in user_info: 
+            field = self.driver.find_element_by_name(type_field)
+            field.send_keys(user_info[type_field])
+
+            if type_field == "password":
+                field.submit()
+
+        time.sleep(3)
+
+        self.actions = ActionChains(self.driver)
+
+        logout = self.driver.find_element_by_css_selector(".fas.fa-sign-out-alt")
+
+        self.actions.move_to_element(logout).click().perform()
+
+        mon_compte = self.driver.find_element_by_css_selector(".fas.fa-user")
+
+        self.assertEqual(mon_compte.text, "Se connecter")
+        self.driver.quit()
+        
+class TestAccountPage(StaticLiveServerTestCase):
+
+    def setUp(self):
+        
+        self.user_info = {
+            "username" : "lusername",
+            "password" : "mucho_secure",
+            "mail": "lusername@makeinu.com",
+            "first_name": "luser",
+            "last_name": "dunner"
+        }
+
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)),'chromedriver'))
+        
+        User.objects.create_user (
+            username = self.user_info['username'],
+            password = self.user_info['password'],
+            email = self.user_info['mail'],
+            first_name = self.user_info['first_name'],
+            last_name = self.user_info['last_name']
+        )
+
+        self.driver.get('{}{}'.format(self.live_server_url, '/signin'))
+
+        for fieldname in ['username', "password"]:
+            field = self.driver.find_element_by_name(fieldname)
+            field.send_keys(self.user_info[fieldname])
+
+            if fieldname == "password":
+                field.submit()
+        
+        self.driver.get('{}{}'.format(self.live_server_url, '/account'))
+
+        time.sleep(1)
+
+    def tearDown(self):
+        self.driver.quit()
+
+    @tag("myusername")
+    def test_if_user_name_appear_on_account_page_header(self):
+        
+        # Tester que le nom de l'utilisateur apparait bien dans le header
+
+        element = self.driver.find_element_by_css_selector("h1")
+        self.assertEqual(element.text, "Ahoy {} !".format(self.user_info['username']).upper())
+    
+    @tag("accountinfo")
+    def test_if_the_form_does_display_user_account_info(self):
+        
+        # Tester que le formulaire affiche bien les informations de l'utilisateur
+
+        for fieldname in self.user_info:
+            field = self.driver.find_element_by_name(fieldname)
+            if fieldname != "password":
+                self.assertEqual(field.get_attribute("value"), self.user_info[fieldname])
+    
+    @tag("userdont")
+    def test_if_the_user_is_not_allowed_to_modify_his_account_info(self):
+
+        # Tester que le formulaire n'est pas modifiable par l'utilisateur
+
+        fieldset = self.driver.find_element_by_css_selector("fieldset")
+        self.assertEqual(fieldset.get_attribute("disabled"), "true")
+
+
+

@@ -14,11 +14,3 @@ class SignInForm(forms.Form):
 
 class AuthenticationFormPlus(AuthenticationForm):
     error_css_class = 'invalid-feedback' #marche pas, sans doute parce qu'il faut hériter de forms.Form
-
-
-# Formulaire Nom CharField
-# Formulaire Pseudo CharField
-# Formulaire Prénom CharField
-# Formulaire Mail EmailField
-# Formulaire Mot de passe PasswordField
-# Bouton valider

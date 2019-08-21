@@ -2,11 +2,12 @@ from django.shortcuts import render, get_list_or_404, redirect
 from website.models import Media, Product
 from website.product_selector import replacement_picker
 from website.forms import RegistrationForm, SignInForm, AuthenticationFormPlus
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
-
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from django.http.response import HttpResponseRedirect
 
 def home(request):
     
@@ -55,7 +56,9 @@ def signup(request):
 
 def signin(request):
     
-    print("1 Vous êtes connecté en tant que: ", request.user)
+    # print("1 Vous êtes connecté en tant que: ", request.user)
+    # next = request.GET.get('next')
+    # print("YA QUOI DEDANS", next)
 
     if request.method == "POST":
         form = AuthenticationForm(request, request.POST)  
@@ -70,8 +73,8 @@ def signin(request):
             login(request, user_obj)
 
             if request.user.is_authenticated:
-                print("2 Vous êtes connecté en tant que: ", request.user)
-                return redirect("/")
+                # print("2 Vous êtes connecté en tant que: ", request.user)
+                return HttpResponseRedirect("/")
 
     else:
         form = AuthenticationForm(request)
@@ -82,3 +85,26 @@ def signin(request):
         }
 
     return render(request, "signin.html", vars)
+
+@login_required()
+def account(request):
+
+    user = request.user
+
+    user_data = {
+        'username':user.username,
+        'first_name':user.first_name,
+        'last_name':user.last_name,
+        'mail': user.email
+        }
+
+    vars = {
+        'title': "Mon compte",
+        'form': RegistrationForm(initial=user_data)
+    }
+
+    return render(request, "account.html", vars)
+
+def logoutv(request):
+    logout(request)
+    return redirect(reverse("home"))
