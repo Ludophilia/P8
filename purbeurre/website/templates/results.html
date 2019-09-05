@@ -26,9 +26,18 @@
                         <h3 class="results card-title">
                             {{ substitute.product_name }}
                         </h3>
+                        {% if user.is_authenticated %} 
                         <div class="card-subtitle text-muted">
-                            <i class="far fa-save"></i> <div class="d-inline-block mx-1">Sauvegarder</div>
+                            <!-- Il faut créer une fonction python qui gère le statut de sauvegarde d'un aliment
+                            soit c'est sauvegardé soit c'est sauvegarder en fonction de ce qu'il y a dans la base sur ce produit 
+                            et cet utilisateur. La valeur {{ save_status }} sera alors placée à la place de Sauvegarder en bas -->
+                            <i class="far fa-save"></i> <a href="#" class="mx-1 save-link">Sauvegarder</a> 
                         </div>
+                        {% else %}
+                        <div class="card-subtitle text-muted">
+                            <div >Connectez-vous pour <i class="far fa-save mx-1"></i></div>
+                        </div>
+                        {% endif %} 
                     </div>
                 </div>
             </div>

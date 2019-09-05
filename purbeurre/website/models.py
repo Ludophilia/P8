@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User #Pour reference de clé étrangère
 
 # Create your models here.
 
@@ -40,21 +41,15 @@ class Media(models.Model):
     class Meta:
         db_table = "media"
 
-class User(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    mail_address = models.CharField(max_length=200)
-    password = models.CharField(max_length=48)
-
-    class Meta:
-        db_table = "user"
+#Modifié, attention au modèle physique
 
 class Record(models.Model):
     record_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, to_field="user_id", on_delete=models.CASCADE)
-    product_recorded = models.ForeignKey(Product, to_field="product_name", on_delete=models.CASCADE, related_name='product_recorded_set')
-    product_searched = models.ForeignKey(Product, to_field="product_name", on_delete=models.CASCADE, related_name='product_searched_set')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    substitute = models.ForeignKey(Product, to_field="product_name", on_delete=models.CASCADE, related_name='product_recorded_set')
+
+    def __str__(self):
+        return "record_id: {}, from user: {}, product_recorded: {}".format(self.record_id, self.user, self.substitute)
 
     class Meta:
         db_table = "record"

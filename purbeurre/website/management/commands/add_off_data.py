@@ -47,8 +47,9 @@ class Command(BaseCommand):
     def check_if_important_values_exist(self, product_dict): 
 
         try:
-            if len(product_dict["product_name_fr"]) != 0 and len(product_dict["nutrition_grade_fr"]) != 0 and product_dict["nutriments"]["energy_100g"] >= 0:
-                return True
+            if len(product_dict["product_name_fr"]) != 0 and len(product_dict["nutrition_grade_fr"]) != 0:
+                if len(product_dict["image_front_url"])!=0 and product_dict["nutriments"]["energy_100g"] >= 0:
+                    return True
             else:
                 return False
         except:
@@ -65,7 +66,7 @@ class Command(BaseCommand):
                 if self.check_if_important_values_exist(product):
 
                     product_name = self.get_product_data(product, "product_name_fr")
-                    
+
                     if product_name not in products_already_in_db: 
                     
                         products_already_in_db += [product_name]
@@ -100,11 +101,10 @@ class Command(BaseCommand):
         
         if type_data == "product_data":
             for product in Product.objects.all():
-                print("Product:", product.product_id, product.product_name, product.category)
+                print("Product:", product.product_name, product.category, product.off_url)
         
         if type_data == "media_data":
             for media in Media.objects.all():
-                # print("Media:", media.product, media.image_front_url, media.image_thumb_url)
                 print("Media:", media.image_front_url, media.image_full_url)
 
         if type_data == "nutrition_data":

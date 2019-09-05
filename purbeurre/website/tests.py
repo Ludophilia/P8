@@ -3,7 +3,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
-from website.models import Product, Nutrition, Media
+from website.models import Product, Nutrition, Media, Record
 from website.management.commands.add_off_data import Command
 from website.product_selector import replacement_picker, sugary_product_categories
 from website.views import results
@@ -12,7 +12,6 @@ from selenium.webdriver.common.action_chains import ActionChains
 from decimal import Decimal
 import os, time, random
 
-# Create your tests here.
 
 @tag("example")
 class TestExample(SimpleTestCase):
@@ -46,14 +45,22 @@ class TestProductAdditionToDatabase(TestCase):
         total_media = Media.objects.count()
 
         self.assertGreaterEqual(total_products, 36*15) #Make sure there is more than 540 items or 15 items per category
+        print("total products:", total_products) #Tester feedback
+
         self.assertGreaterEqual(total_nutrition, 36*15)
+        print("total nutrition:", total_nutrition)
+
         self.assertGreaterEqual(total_media, 36*15)
+        print("total media:", total_media) 
 
         self.assertEqual(total_products, total_nutrition)
         self.assertEqual(total_nutrition, total_media)
 
-        # self.command.show_data("media_data")
-    
+        if total_products == total_nutrition and total_nutrition == total_media: 
+            print("Données uniformes, vous pouvez y aller!")
+            if total_products < 600:
+                print("C'est moins que la dernière fois en revanche.")
+
     @tag("product-quality")
     def test_the_quality_of_product_data(self):
 
@@ -166,18 +173,14 @@ class TestProductReplacementFunction(StaticLiveServerTestCase):
 
     @tag("repl_working?")
     def test_if_the_product_replacement_is_working_correctly(self):
-        #Analyser ce que recoit la view en query
-
+        
         self.command = Command()
         self.command.handle()
 
         products = ["bâtonnets de surimi", "Orangina", "Perrier fines bulles", "Pâtes Spaghetti au blé complet", "Salade de quinoa aux légumes", "Magnum Double Caramel"]
-        substitutes = ["Filets de Colin Panés", "Perrier fines bulles", "Perrier fines bulles", "Coquillettes", "Betteraves à la Moutarde à l'Ancienne", "Les bios vanille douce sava"]
+        substitutes = ["Filets de Colin Panés", "Cristaline", "Cristaline", "Coquillettes", "Betteraves à la Moutarde à l'Ancienne", "Les bios vanille douce sava"]
         i = 0
         
-        # e = Product.objects.get(product_name__iexact="bâtonnets de surimi")
-        # print(e.product_name)
-
         for product in products:
             self.driver.get("{}".format(self.live_server_url)) 
 
@@ -185,23 +188,20 @@ class TestProductReplacementFunction(StaticLiveServerTestCase):
             searchbox.send_keys(product)
             searchbox.submit()
 
+            time.sleep(2)
+
             substitute_name = self.driver.find_element_by_css_selector(".results.card-title").text
-            self.assertEqual(substitute_name, substitutes[i])
+            # self.assertEqual(substitute_name, substitutes[i]) # Retiré, le nom des substituts a changé en 1 mois et demi... Diable. Seul le nutriscore sera testé
 
             product_nutriscore = Product.objects.get(product_name__iexact=product).nutrition.nutriscore
             substitute_nutriscore = Product.objects.get(product_name__iexact=substitute_name).nutrition.nutriscore     
 
             self.assertLessEqual(ord(substitute_nutriscore), ord(product_nutriscore))
-            time.sleep(1)
             i+=1
         
     @tag("repl_404")
     def test_if_404_is_correctly_raised(self):
         
-        #Problème avec le mini client, une requete normale de type get("search", {"query":"orangina"}) donne une status_code de 404
-
-        # Il existe Sans doute une autre façon de faire, faudrait la trouver
-
         self.driver.get("{}".format(self.live_server_url)) 
 
         searchbox = self.driver.find_element_by_name("query")
@@ -532,5 +532,70 @@ class TestAccountPage(StaticLiveServerTestCase):
         fieldset = self.driver.find_element_by_css_selector("fieldset")
         self.assertEqual(fieldset.get_attribute("disabled"), "true")
 
+@tag("srecord")
+class TestSubstituteRecording(StaticLiveServerTestCase):
 
+    def setUp(self):
+        
+        # Remplissage de la base en produits
 
+        self.command = Command()
+        self.command.handle()
+        
+        # Création d'un utilisateur
+
+        self.user_info = {
+            "username" : "lusername",
+            "password" : "mucho_secure",
+            "mail": "lusername@makeinu.com",
+            "first_name": "luser",
+            "last_name": "dunner"
+        }
+
+        User.objects.create_user (
+            username = self.user_info['username'],
+            password = self.user_info['password'],
+            email = self.user_info['mail'],
+            first_name = self.user_info['first_name'],
+            last_name = self.user_info['last_name']
+        )
+
+        # Connexion utiilisateur
+
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)),'chromedriver'))
+
+        self.driver.get('{}{}'.format(self.live_server_url, '/signin'))
+
+        for fieldname in ['username', "password"]:
+            field = self.driver.find_element_by_name(fieldname)
+            field.send_keys(self.user_info[fieldname])
+
+            if fieldname == "password":
+                field.submit()
+        
+    def tearDown(self):
+        self.driver.quit()
+    
+    def test_if_the_user_can_associate_a_substitute_to_his_account(self):
+        
+        # Obtenir la page produit, celle d'orangina typiquement
+
+        self.driver.get('{}{}'.format(self.live_server_url, '/'))
+
+        searchbox = self.driver.find_element_by_name("query")
+        searchbox.send_keys("orangina")
+        searchbox.submit()
+
+        save_link = self.driver.find_elements_by_css_selector("a.save-link")[0]
+
+        ActionChains(self.driver).click(save_link).perform()
+
+        time.sleep(1)
+        
+        print(Record.objects.all())
+
+        recording = Record.objects.get(pk=1)
+        subsitute = self.driver.find_elements_by_css_selector("h3.results")[0].text
+
+        self.assertEqual(recording.user.username, "lusername")
+        self.assertEqual(recording.substitute.product_name, subsitute)

@@ -55,4 +55,4 @@ def replacement_picker(product, index_start, index_end): #product est un produit
     else:
         raise TypeError("index_start et index_end doivent être des int")
 
-    return substitute #Un objet_produit produit plus sain en sortie
+    return substitute #Un queryset produit plus sain en sortie
