@@ -1,4 +1,4 @@
-from website.models import Product, Nutrition
+from website.models import Product, Nutrition, Record
 
 #Que faire? 
 
@@ -56,3 +56,34 @@ def replacement_picker(product, index_start, index_end): #product est un produit
         raise TypeError("index_start et index_end doivent être des int")
 
     return substitute #Un queryset produit plus sain en sortie
+
+def wrapper(substitutes_list, **extra_args):
+
+    substitutes = [] # Wrapper ajoute le statut de sauvegarde de l'utilisateur du substitut à la liste des substituts 
+
+    for substitute in substitutes_list:
+
+        if "user" in extra_args:
+            
+            user_recordings = Record.objects.filter(user__exact=extra_args['user']).filter(substitute__exact=substitute).count()
+
+            if user_recordings > 0:
+                substitutes += [
+                    {"product": substitute,
+                    "save_button_text": "Sauvegardé",
+                    "save_button_class": "unsave-link"}
+                ]
+            else:
+                substitutes += [
+                    {"product": substitute,
+                    "save_button_text": "Sauvegarder",
+                    "save_button_class": "save-link"}
+                ]
+        else:
+
+            substitutes += [
+                {"product": substitute
+                }
+            ]
+
+    return substitutes

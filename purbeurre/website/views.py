@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_list_or_404, redirect
 from website.models import Media, Product, Record
-from website.product_selector import replacement_picker
+from website.selection_tools import replacement_picker, wrapper
 from website.forms import RegistrationForm, SignInForm, AuthenticationFormPlus
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -8,7 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
-from django.http import HttpResponse #A retirer non ? 
+from django.http import HttpResponse
 
 def home(request):
     
@@ -19,42 +19,24 @@ def home(request):
 def results(request):
     
     query = request.GET.get('query')
+
     product = get_list_or_404(Product, product_name__iexact=query)[0]
-    
     product_name = product.product_name
     product_photo_url = product.media.image_full_url
-    substitutes = replacement_picker(product, 0, 6)
 
-    # Il faut créer une fonction qui vérifie qu'un utilisateur a enregistré le produit en question
-        # Plus d'une fonction qui vérifie les statuts de sauvegarde de chaque produit pour cet utilisateur et qui ensuite renvoie un dictionnaire ou une liste contenant le statut
-        # Ce serait plus simple avec un ditionnaire. Clé, le substitut, valeur le statut de sauvegarde. Au passage, il faut retirer le produit recherché, on peut tomber sur le même produit de remplacement dans plusieurs recherches, alors l'associer a une en particulier ?  
-        # Reste le problème de comment on va accéder aux données du dictionnaire. Ce sera sans doute sous la forme {{ savestate.substitute.product_name}} mais ça ne marchera pas car product_name != substitute.product_name
-        
-    for sub in substitutes:
-        print(sub, type(sub))
+    # Record.objects.all().delete() #Suppression rapide.
 
-        #Voilà ce que la fonction doit sortir, à partir des args substitutes (générés par replacement_picker)
-        substitutes = [
-            {"product": "product01",
-             "save_button_text": "Sauvegarder" 
-            },
-            {"product": "product02",
-             "save_button_text": "Sauvegardé" 
-            },
-        ]
+    if request.user.is_authenticated:
+        substitutes_wrapped = wrapper(replacement_picker(product, 0, 6), user = request.user)
+    else:
+        substitutes_wrapped = wrapper(replacement_picker(product, 0, 6))
 
-    def check_save_status():
-        pass
-        # A besoin: 
-        # du nom de l'utilisateur (request.user)
-        # du produit en question
-
-    var = {'title': "Resultats de la recherche",
+    vars = {'title': "Resultats de la recherche",
             'product_name': product_name,
             'product_photo_url': product_photo_url,
-            'substitutes': substitutes}
+            'substitutes_wrapped': substitutes_wrapped}
             
-    return render(request, "results.html", var)
+    return render(request, "results.html", vars)
 
 def save(request):
     if request.method == 'POST':

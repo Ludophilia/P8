@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from website.models import Product, Nutrition, Media, Record
 from website.management.commands.add_off_data import Command
-from website.product_selector import replacement_picker, sugary_product_categories
+from website.selection_tools import replacement_picker, sugary_product_categories
 from website.views import results
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -532,7 +532,6 @@ class TestAccountPage(StaticLiveServerTestCase):
         fieldset = self.driver.find_element_by_css_selector("fieldset")
         self.assertEqual(fieldset.get_attribute("disabled"), "true")
 
-@tag("srecord")
 class TestSubstituteRecording(StaticLiveServerTestCase):
 
     def setUp(self):
@@ -576,7 +575,8 @@ class TestSubstituteRecording(StaticLiveServerTestCase):
     def tearDown(self):
         self.driver.quit()
     
-    def test_if_the_user_can_associate_a_substitute_to_his_account(self):
+    @tag("srecord")
+    def test_if_the_user_can_record_a_substitute_in_datatabase(self):
         
         # Obtenir la page produit, celle d'orangina typiquement
 
@@ -599,3 +599,48 @@ class TestSubstituteRecording(StaticLiveServerTestCase):
 
         self.assertEqual(recording.user.username, "lusername")
         self.assertEqual(recording.substitute.product_name, subsitute)
+
+    @tag("sbuttons")
+    def test_if_the_save_button_label_change_correctly_when_an_user_save_a_product(self):
+        
+        self.driver.get('{}{}'.format(self.live_server_url, '/search?query=orangina'))
+
+        # On vérifie si le bouton marque "Sauvegarder" si on est connecté
+
+        second_save_link = self.driver.find_element_by_name("Eau de source gazéifiée").find_element_by_class_name("save-link")
+        
+        # print(second_save_link, second_save_link.text)
+        self.assertEqual("Sauvegarder", second_save_link.text)
+
+        # # On vérifie si le bouton marque "Sauvegardé" si on appuie sur le bouton
+
+        ActionChains(self.driver).click(second_save_link).perform()
+        time.sleep(1)
+
+        # print(second_save_link, second_save_link.text)
+        self.assertEqual("Sauvegardé", second_save_link.text)
+
+        # On vérifie si le bouton marque toujours "Sauvegardé" si on rafraichit la page
+
+        self.driver.refresh()
+
+        second_save_link_ag = self.driver.find_element_by_name("Eau de source gazéifiée").find_element_by_class_name("unsave-link")
+
+        # print(second_save_link_ag, second_save_link_ag.text)
+        self.assertEqual("Sauvegardé", second_save_link_ag.text)
+
+    @tag("anon-sbuttons")
+    def test_if_the_save_button_label_is_correctly_hidden_to_an_anonymous_user(self):
+        
+        # On se déco et récupère la page 
+
+        self.driver.get('{}{}'.format(self.live_server_url, '/logout')) #PAs moyen de ne pas lancer setup?
+        self.driver.get('{}{}'.format(self.live_server_url, '/search?query=orangina'))
+
+        # On vérifie si les boutons marquent bien "Connectez-vous pour" quand l'utilisateur n'est pas connecté
+
+        second_save_link = self.driver.find_element_by_name("Eau de source gazéifiée").find_element_by_class_name("con-link")
+
+        # print(second_save_link, second_save_link.text)
+        self.assertIn("Connectez-vous pour", second_save_link.text)
+

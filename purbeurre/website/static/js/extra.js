@@ -56,6 +56,7 @@ var confirm = (event, responseText) => {
 }
 
 var save_links = document.getElementsByClassName("save-link");
+// Faire LA MEME (un observateur d'év) pour la suppression des produits enregistrés.
 
 for (link of save_links) {
     link.addEventListener("click", (e)=>{
@@ -66,5 +67,4 @@ for (link of save_links) {
 
         ajaxPost("/save", `product=${product_name}&substitute=${substitute_name}`, confirm, e)
     })
-    // La récupération de l'objet produit et des infos utilisateurs se fera au niveau de la view
 }

@@ -7,35 +7,31 @@
 {% block subheader %}
 
 <section>
-    <div class="container" style="margin-top:30px"> <!-- A corriger, desactivé pour l'esthertique -->
+    <div class="container" style="margin-top:30px"> <!-- A corriger, desactivé pour l'esthétique -->
         <div class="row">
             <div class="col-lg-12 col-11">
                 <h2 class="results" style="font-size:20px; display:none ; margin-bottom:30px" > 
                     Vous pouvez remplacer cet aliment par :
                 </h2>
-            </div>
-            
+            </div>     
         </div>
         <div class="row justify-content-center">
-            {% for substitute in substitutes %} 
+            {% for substitute_dict in substitutes_wrapped %} 
             <div class="col-lg-4 col-10 mb-4" > 
-                <div class="card">
-                    <img src="{{ substitute.media.image_full_url }}" class="card-img-top" alt="..." height="400">
-                    <span class="n-badge bg-primary">{{ substitute.nutrition.nutriscore }}</span>
+                <div class="card" name="{{ substitute_dict.product.product_name }}">
+                    <img src="{{ substitute_dict.product.media.image_full_url }}" class="card-img-top" alt="..." height="400">
+                    <span class="n-badge bg-primary">{{ substitute_dict.product.nutrition.nutriscore }}</span>
                     <div class="card-body" style="height:110px">
                         <h3 class="results card-title">
-                            {{ substitute.product_name }}
+                            {{ substitute_dict.product.product_name }}
                         </h3>
                         {% if user.is_authenticated %} 
                         <div class="card-subtitle text-muted">
-                            <!-- Il faut créer une fonction python qui gère le statut de sauvegarde d'un aliment
-                            soit c'est sauvegardé soit c'est sauvegarder en fonction de ce qu'il y a dans la base sur ce produit 
-                            et cet utilisateur. La valeur {{ save_status }} sera alors placée à la place de Sauvegarder en bas -->
-                            <i class="far fa-save"></i> <a href="#" class="mx-1 save-link">Sauvegarder</a> 
+                            <i class="far fa-save"></i> <a href="#" class="mx-1 {{ substitute_dict.save_button_class }}">{{ substitute_dict.save_button_text }}</a> 
                         </div>
                         {% else %}
                         <div class="card-subtitle text-muted">
-                            <div >Connectez-vous pour <i class="far fa-save mx-1"></i></div>
+                            <div class="con-link">Connectez-vous pour <i class="far fa-save mx-1"></i></div>
                         </div>
                         {% endif %} 
                     </div>
