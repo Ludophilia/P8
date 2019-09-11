@@ -576,15 +576,17 @@ class TestSubstituteRecording(StaticLiveServerTestCase):
         self.driver.quit()
     
     @tag("srecord")
-    def test_if_the_user_can_record_a_substitute_in_datatabase(self):
+    def test_if_the_user_can_save_and_unsave_a_substitute(self):
         
         # Obtenir la page produit, celle d'orangina typiquement
 
-        self.driver.get('{}{}'.format(self.live_server_url, '/'))
+        # self.driver.get('{}{}'.format(self.live_server_url, '/'))
 
-        searchbox = self.driver.find_element_by_name("query")
-        searchbox.send_keys("orangina")
-        searchbox.submit()
+        # searchbox = self.driver.find_element_by_name("query")
+        # searchbox.send_keys("orangina")
+        # searchbox.submit()
+
+        self.driver.get('{}{}'.format(self.live_server_url, '/search?query=orangina'))
 
         save_link = self.driver.find_elements_by_css_selector("a.save-link")[0]
 
@@ -592,7 +594,7 @@ class TestSubstituteRecording(StaticLiveServerTestCase):
 
         time.sleep(1)
         
-        print(Record.objects.all())
+        # print(Record.objects.all())
 
         recording = Record.objects.get(pk=1)
         subsitute = self.driver.find_elements_by_css_selector("h3.results")[0].text
@@ -600,34 +602,47 @@ class TestSubstituteRecording(StaticLiveServerTestCase):
         self.assertEqual(recording.user.username, "lusername")
         self.assertEqual(recording.substitute.product_name, subsitute)
 
+        # Recliquer sur le même lien et voir si le produit disparait de la table.
+
+        ActionChains(self.driver).click(save_link).perform()
+
+        time.sleep(1)
+
+        user_obj = User.objects.filter(username__exact="lusername")[0]
+        user_products = Record.objects.filter(user__exact=user_obj) #Qu'un seul produit ajouté donc nécessairement
+        
+        # print("nombre:", user_products.count())
+
+        self.assertLessEqual(user_products.count(), 1)
+
     @tag("sbuttons")
-    def test_if_the_save_button_label_change_correctly_when_an_user_save_a_product(self):
+    def test_if_the_save_button_label_change_correctly_when_an_user_save_and_remove_a_product(self):
         
         self.driver.get('{}{}'.format(self.live_server_url, '/search?query=orangina'))
 
         # On vérifie si le bouton marque "Sauvegarder" si on est connecté
 
         second_save_link = self.driver.find_element_by_name("Eau de source gazéifiée").find_element_by_class_name("save-link")
-        
-        # print(second_save_link, second_save_link.text)
         self.assertEqual("Sauvegarder", second_save_link.text)
 
         # # On vérifie si le bouton marque "Sauvegardé" si on appuie sur le bouton
 
         ActionChains(self.driver).click(second_save_link).perform()
-        time.sleep(1)
-
-        # print(second_save_link, second_save_link.text)
+        time.sleep(1) #Important, pour laisser tous les changements se faire...
         self.assertEqual("Sauvegardé", second_save_link.text)
 
         # On vérifie si le bouton marque toujours "Sauvegardé" si on rafraichit la page
 
         self.driver.refresh()
 
-        second_save_link_ag = self.driver.find_element_by_name("Eau de source gazéifiée").find_element_by_class_name("unsave-link")
-
-        # print(second_save_link_ag, second_save_link_ag.text)
+        second_save_link_ag = self.driver.find_element_by_name("Eau de source gazéifiée").find_element_by_class_name("save-link")
         self.assertEqual("Sauvegardé", second_save_link_ag.text)
+
+        #On vérifie si appuyer sur le bouton faire passer le message à "Sauvegarder"
+
+        ActionChains(self.driver).click(second_save_link_ag).perform()
+        time.sleep(1)
+        self.assertEqual("Sauvegarder", second_save_link_ag.text)
 
     @tag("anon-sbuttons")
     def test_if_the_save_button_label_is_correctly_hidden_to_an_anonymous_user(self):

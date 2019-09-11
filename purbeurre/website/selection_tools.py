@@ -71,7 +71,7 @@ def wrapper(substitutes_list, **extra_args):
                 substitutes += [
                     {"product": substitute,
                     "save_button_text": "Sauvegardé",
-                    "save_button_class": "unsave-link"}
+                    "save_button_class": "save-link"}
                 ]
             else:
                 substitutes += [

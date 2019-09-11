@@ -1,14 +1,14 @@
 from django.shortcuts import render, get_list_or_404, redirect
 from website.models import Media, Product, Record
 from website.selection_tools import replacement_picker, wrapper
-from website.forms import RegistrationForm, SignInForm, AuthenticationFormPlus
+from website.forms import RegistrationForm, SignInForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 def home(request):
     
@@ -18,16 +18,18 @@ def home(request):
 
 def results(request):
     
+    # Record.objects.all().delete() #Suppression rapide.
+
     query = request.GET.get('query')
 
     product = get_list_or_404(Product, product_name__iexact=query)[0]
     product_name = product.product_name
     product_photo_url = product.media.image_full_url
-
-    # Record.objects.all().delete() #Suppression rapide.
-
+    
     if request.user.is_authenticated:
-        substitutes_wrapped = wrapper(replacement_picker(product, 0, 6), user = request.user)
+        substitutes_wrapped = wrapper(
+            replacement_picker(product, 0, 6), 
+            user = request.user)
     else:
         substitutes_wrapped = wrapper(replacement_picker(product, 0, 6))
 
@@ -41,17 +43,49 @@ def results(request):
 def save(request):
     if request.method == 'POST':
         
-        # Il faut créer une fonction qui vérifie si une combinaison utilisateur existe avant de créer une nouvelle entrée. Ce sera à partir de cette info qu'on renverra "OK" ou "ERR" par exemple.
-        Record.objects.create(
-            user = request.user,
-            substitute = Product.objects.get(pk=request.POST.get('substitute')),
-        ) 
+        user_request = request.POST.get("request")
+        substitute = request.POST.get('substitute')
+        user_obj = request.user
 
-        return HttpResponse("OK") 
-        
+        if user_request == "save":
+            
+            try:
+                
+                substitute_obj = Product.objects.get(pk=substitute)
+
+                Record.objects.create(
+                    user = user_obj,
+                    substitute = substitute_obj
+                )
+
+                print("Nombre d'objects après create:", Record.objects.count())
+
+                return HttpResponse("SaveOK")
+
+            except:
+                return HttpResponse("SaveError")
+
+        if user_request == "unsave":
+            
+            try:
+                
+                substitute_obj = Product.objects.get(pk=substitute)
+
+                Record.objects.filter(
+                    user__exact=user_obj
+                    ).filter(
+                    substitute__exact=substitute_obj).delete()
+
+                print("Nombre d'objects après delete:", Record.objects.count())
+                    
+                return HttpResponse("UnsaveOK")
+
+            except:
+                return HttpResponse("SaveError")
+
     else:
-        return HttpResponse("wow")
-
+        raise Http404("Web ressource not found! Well excuuuuuuse us, your highness!")
+    
 def signup(request):
     
     if request.method == "POST":

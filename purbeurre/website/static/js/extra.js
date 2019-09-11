@@ -39,32 +39,45 @@ function ajaxPost(url, data, callback, event) {
     request.send(data);
     }	
 
-
 // Pour déclencher l'envoi des infos de produit au serveur
 
-var capitalize = (name) => name.charAt(0).toUpperCase()+name.slice(1)
+var save_links = document.getElementsByClassName("save-link");
 
-// Modifier la fonction callback de telle manière à ce qu'elle modifie le dom en fonction de la reponse de la vue: si c'est OK, vous modifiez et vous écrivez "enregistré", sinon, Opération impossible ou rien (ne compléxfiez pas trop non plus)
-
-//Il faudra sans doute aussi prendre en compte l'objet event
-var confirm = (event, responseText) => {
-    if (responseText === "OK") {
-        var button_text = event.target
-        button_text.innerText = "Sauvegardé"
-        console.log(button_text)
+var confirmToUser = (event, responseText) => {
+    
+    if (responseText === "SaveOK") {
+        event.target.innerText = "Sauvegardé"
+    } else if (responseText === "UnsaveOK") {
+        event.target.innerText = "Sauvegarder"
+    } else if (responseText === "SaveError") {
+        event.target.innerText = "Erreur"
     }
 }
 
-var save_links = document.getElementsByClassName("save-link");
-// Faire LA MEME (un observateur d'év) pour la suppression des produits enregistrés.
-
 for (link of save_links) {
-    link.addEventListener("click", (e)=>{
+
+    link.addEventListener("click", (e) => {
+
         e.preventDefault()
-
+        
         var substitute_name = e.target.parentNode.parentNode.querySelector("h3").innerText
-        var product_name = capitalize(document.getElementsByTagName("h1")[0].innerText.toLowerCase())
+        var button_text_value = e.target.innerText
 
-        ajaxPost("/save", `product=${product_name}&substitute=${substitute_name}`, confirm, e)
+        if (button_text_value === "Sauvegarder") {
+
+            ajaxPost(
+                "/save", 
+                `request=save&substitute=${substitute_name}`, 
+                confirmToUser, 
+                e)
+
+        } else if (button_text_value === "Sauvegardé") {
+            
+            ajaxPost("/save", 
+                `request=unsave&substitute=${substitute_name}`, 
+                confirmToUser, 
+                e)
+
+        }    
     })
 }
