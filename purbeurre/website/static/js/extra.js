@@ -45,6 +45,8 @@ var save_links = document.getElementsByClassName("save-link");
 
 var confirmToUser = (event, responseText) => {
     
+    // C'est un switch là ? 
+
     if (responseText === "SaveOK") {
         event.target.innerText = "Sauvegardé"
     } else if (responseText === "UnsaveOK") {
@@ -62,6 +64,13 @@ for (link of save_links) {
         
         var substitute_name = e.target.parentNode.parentNode.querySelector("h3").innerText
         var button_text_value = e.target.innerText
+
+        // Fix pour prendre en compte les nomps produits qui incluent "&" le "aaa"mperstand est fait exprès
+        if (substitute_name.includes("&")) {
+            console.log(substitute_name)
+            substitute_name = substitute_name.replace("&", "aaampersand")
+            console.log(substitute_name)
+        }
 
         if (button_text_value === "Sauvegarder") {
 

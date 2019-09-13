@@ -16,6 +16,18 @@ def home(request):
     
     return render(request, "home.html", var)
 
+@login_required()
+def myproducts(request):
+
+    #Récupérer les données de l'utilisateur
+
+    myproducts = Record.objects.filter(user__exact=request.user)
+    
+    vars = {'title': "Mes produits",
+            'myproducts': myproducts}
+
+    return render(request, "my_products.html", vars)
+
 def results(request):
     
     # Record.objects.all().delete() #Suppression rapide.
@@ -41,24 +53,30 @@ def results(request):
     return render(request, "results.html", vars)
 
 def save(request):
+    
     if request.method == 'POST':
         
+        print("[retour viewfunc] données reçues:", request.POST.dict())
+
         user_request = request.POST.get("request")
         substitute = request.POST.get('substitute')
         user_obj = request.user
+
+        if "aaampersand" in substitute:
+            substitute = substitute.replace("aaampersand", "&")
 
         if user_request == "save":
             
             try:
                 
-                substitute_obj = Product.objects.get(pk=substitute)
+                substitute_obj = Product.objects.get(product_name=substitute)
+                print("[retour viewfunc] Substitut trouvé:", substitute_obj)
 
                 Record.objects.create(
                     user = user_obj,
                     substitute = substitute_obj
                 )
-
-                print("Nombre d'objects après create:", Record.objects.count())
+                print("[retour viewfunc] Produit enregistré. Nombre d'objects dans record:", Record.objects.count())
 
                 return HttpResponse("SaveOK")
 

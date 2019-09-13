@@ -58,44 +58,47 @@ class Command(BaseCommand):
     def handle(self, *args, **options): 
         
         products_already_in_db = list()
+        number_of_products = Product.objects.all().count() #Redondant
+        
+        if number_of_products == 0:
 
-        for category in self.get_categories_from_categories_txt():
+            for category in self.get_categories_from_categories_txt():
 
-            for product in self.get_products_data_list_from_off(category, 20, 1):
-                
-                if self.check_if_important_values_exist(product):
-
-                    product_name = self.get_product_data(product, "product_name_fr")
-
-                    if product_name not in products_already_in_db: 
+                for product in self.get_products_data_list_from_off(category, 20, 1):
                     
-                        products_already_in_db += [product_name]
+                    if self.check_if_important_values_exist(product):
 
-                        product_entry = Product.objects.create(
-                            product_name = product_name,
-                            off_url = self.get_product_data(product, "url"), 
-                            category = category
-                        )
+                        product_name = self.get_product_data(product, "product_name_fr")
 
-                        Media.objects.create(
-                            product = product_entry,
-                            image_front_url = self.get_product_data(product, "image_front_url"),
-                            image_full_url = self.get_product_data(product, "image_full_url")
-                        )
+                        if product_name not in products_already_in_db: 
+                        
+                            products_already_in_db += [product_name]
 
-                        Nutrition.objects.create(
-                            product = product_entry,
-                            nutriscore = self.get_product_data(product, "nutrition_grade_fr"),
-                            energy_100g = self.get_product_data(product, "energy_100g"),
-                            energy_unit = self.get_product_data(product, "energy_unit"),
-                            proteins_100g = self.get_product_data(product, "proteins_100g"),
-                            fat_100g = self.get_product_data(product, "fat_100g"),
-                            saturated_fat_100g = self.get_product_data(product, "saturated-fat_100g"),
-                            carbohydrates_100g = self.get_product_data(product, "carbohydrates_100g"),
-                            sugars_100g = self.get_product_data(product, "sugars_100g"),
-                            fiber_100g = self.get_product_data(product, "fiber_100g"),
-                            salt_100g = self.get_product_data(product, "salt_100g")
-                        )
+                            product_entry = Product.objects.create(
+                                product_name = product_name,
+                                off_url = self.get_product_data(product, "url"), 
+                                category = category
+                            )
+
+                            Media.objects.create(
+                                product = product_entry,
+                                image_front_url = self.get_product_data(product, "image_front_url"),
+                                image_full_url = self.get_product_data(product, "image_full_url")
+                            )
+
+                            Nutrition.objects.create(
+                                product = product_entry,
+                                nutriscore = self.get_product_data(product, "nutrition_grade_fr"),
+                                energy_100g = self.get_product_data(product, "energy_100g"),
+                                energy_unit = self.get_product_data(product, "energy_unit"),
+                                proteins_100g = self.get_product_data(product, "proteins_100g"),
+                                fat_100g = self.get_product_data(product, "fat_100g"),
+                                saturated_fat_100g = self.get_product_data(product, "saturated-fat_100g"),
+                                carbohydrates_100g = self.get_product_data(product, "carbohydrates_100g"),
+                                sugars_100g = self.get_product_data(product, "sugars_100g"),
+                                fiber_100g = self.get_product_data(product, "fiber_100g"),
+                                salt_100g = self.get_product_data(product, "salt_100g")
+                            )
 
     def show_data(self, type_data):
         

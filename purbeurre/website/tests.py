@@ -659,3 +659,116 @@ class TestSubstituteRecording(StaticLiveServerTestCase):
         # print(second_save_link, second_save_link.text)
         self.assertIn("Connectez-vous pour", second_save_link.text)
 
+@tag("my")
+class TestMyProductPage(StaticLiveServerTestCase):
+    
+    def setUp(self):
+
+        # Remplissage de la base en produits
+
+        self.command = Command()
+        self.command.handle()
+        
+        # Création d'un utilisateur
+
+        self.user_info = {
+            "username" : "lusername",
+            "password" : "mucho_secure",
+            "mail": "lusername@makeinu.com",
+            "first_name": "luser",
+            "last_name": "dunner"
+        }
+
+        User.objects.create_user (
+            username = self.user_info['username'],
+            password = self.user_info['password'],
+            email = self.user_info['mail'],
+            first_name = self.user_info['first_name'],
+            last_name = self.user_info['last_name']
+        )
+
+        # Connexion utiilisateur
+
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)),'chromedriver'))
+
+        self.driver.get('{}{}'.format(self.live_server_url, '/signin'))
+
+        for fieldname in ['username', "password"]:
+            field = self.driver.find_element_by_name(fieldname)
+            field.send_keys(self.user_info[fieldname])
+
+            if fieldname == "password":
+                field.submit()
+
+    def tearDown(self):
+        self.driver.quit()
+
+    def test_if_the_page_displays_correctly(self):
+        
+        base_url = self.live_server_url
+        self.driver.get('{}{}'.format(base_url, '/myproducts'))
+        self.assertEqual(self.driver.current_url, '{}{}'.format(base_url, '/myproducts'))
+
+    @tag('my-lr')
+    def test_if_the_page_displays_only_to_logged_users(self):
+        
+        base_url = self.live_server_url
+
+        self.driver.get('{}{}'.format(base_url, '/logout'))
+        self.driver.get('{}{}'.format(base_url, '/myproducts'))
+        self.assertNotEqual(self.driver.current_url, '{}{}'.format(base_url, '/myproducts'))
+
+    @tag('my-pg')
+    def test_if_the_products_saved_by_the_user_are_displayed_correctly(self):
+
+        products = ["bâtonnets de surimi", "Filets de Colin Panés", "Salade de quinoa aux légumes", "Les bios vanille douce sava", "Coquillettes", "Salade & Compagnie - Montmartre"]
+        user = User.objects.get(username="lusername")
+
+        for product in products:
+            # print("product:", Product.objects.get(product_name=product))
+            Record.objects.create(
+                user = user,
+                substitute = Product.objects.get(product_name=product)
+            )
+
+        print("records au total:", Record.objects.count())
+
+        time.sleep(1)
+
+        base_url = self.live_server_url
+
+        self.driver.get('{}{}'.format(base_url, '/myproducts'))
+
+        for h3_block in self.driver.find_elements_by_css_selector("h3"):
+            print("Dans cet h3:", h3_block.text)
+            self.assertIn(h3_block.text, products)
+
+    @tag('my-rm')
+    def test_if_clicking_on_the_save_button_on_the_page_still_remove_the_product(self):
+        
+        products = ["bâtonnets de surimi", "Filets de Colin Panés", "Salade de quinoa aux légumes", "Les bios vanille douce sava", "Coquillettes", "Salade & Compagnie - Montmartre"]
+        user = User.objects.get(username="lusername")
+
+        for product in products:
+            Record.objects.create(
+                user = user,
+                substitute = Product.objects.get(product_name=product)
+            )
+
+        number_of_products = Record.objects.count()
+        print("records au total:", number_of_products)
+
+        time.sleep(1)
+
+        base_url = self.live_server_url
+        self.driver.get('{}{}'.format(base_url, '/myproducts'))
+
+        save_links = self.driver.find_elements_by_css_selector("a.save-link")
+
+        for link in save_links:
+            ActionChains(self.driver).click(link).perform()
+        
+        time.sleep(3)
+
+        self.assertEqual(Record.objects.count(), 0)
+
