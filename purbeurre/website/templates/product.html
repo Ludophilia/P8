@@ -1,0 +1,32 @@
+{% extends "base_mfh.html" %}
+{% load static %}
+
+<!-- Préciser tile dans la view -->
+{% block header_background %} {{ product.media.image_full_url }} {% endblock %}
+{% block product_name %} {{ product.product_name }} {% endblock %}
+
+{% block subheader %}
+
+<div class="container text-center" style="padding: 25px 0%">
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-7 col-10 mb-4">
+            <img src="{{ product.media.image_full_url }}" alt="" height="500px" width="100%"> <br/>
+        </div>
+        <div class="col-lg-4 col-10 mb-4">
+            <h3 display="none" class="text-uppercase" style="font-size:20px">POUR 100g</h3>
+            <p class="">
+                <strong>Energie :</strong> {{ product.nutrition.energy_100g }} {{ product.nutrition.energy_unit }}<br/>
+                <strong>Lipides :</strong>{{ product.nutrition.fat_100g }} g <br/>
+                <strong>dont graisses saturées :</strong> {{ product.nutrition.saturated_fat_100g }} g <br/>
+                <strong>Sucres :</strong> {{ product.nutrition.sugars_100g }} g <br/>
+                <strong>Sel :</strong> {{ product.nutrition.salt_100g }} g <br/>
+                <a class="" href="{{ product.off_url }}"> Fiche complète sur OpenFoodFacts</a><br/>
+            </p>
+        </div>
+        <div class="col-lg-4 col-10 mb-4">
+            <img src="https://static.openfoodfacts.org/images/misc/nutriscore-{{ product.nutrition.nutriscore }}.svg" alt=""> <br/>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

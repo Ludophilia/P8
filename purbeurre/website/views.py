@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_list_or_404, redirect
+from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from website.models import Media, Product, Record
-from website.selection_tools import replacement_picker, wrapper
+from website.selection_tools import replacement_picker, wrapper, product_url_builder
 from website.forms import RegistrationForm, SignInForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -19,41 +19,54 @@ def home(request):
 @login_required()
 def myproducts(request):
 
-    #Récupérer les données de l'utilisateur
+    myrecords = Record.objects.filter(user__exact=request.user)
+    myproducts = [record.substitute for record in myrecords] 
+    my_products_wrapped = wrapper(myproducts)
 
-    myproducts = Record.objects.filter(user__exact=request.user)
-    
     vars = {'title': "Mes produits",
-            'myproducts': myproducts}
+            'myproducts': my_products_wrapped}
 
     return render(request, "my_products.html", vars)
 
+def product(request):
+
+    #Les infos sont envoyée depuis les liens sur les produits
+
+    if request.method == "GET":
+        
+        product_name = request.GET.get("query")
+        product = get_object_or_404(Product, pk=product_name)
+        
+        vars = {"title": "Fiche produit - {}".format(product_name),
+                "product": product}
+
+        return render(request, "product.html", vars)
+
 def results(request):
     
-    # Record.objects.all().delete() #Suppression rapide.
+    # Record.objects.all().delete() #Suppression rapide. All obligatoire?
 
     query = request.GET.get('query')
-
     product = get_list_or_404(Product, product_name__iexact=query)[0]
-    product_name = product.product_name
-    product_photo_url = product.media.image_full_url
     
     if request.user.is_authenticated:
-        substitutes_wrapped = wrapper(
-            replacement_picker(product, 0, 6), 
-            user = request.user)
-    else:
-        substitutes_wrapped = wrapper(replacement_picker(product, 0, 6))
+        substitutes = replacement_picker(product, 0, 6)
+        substitutes_wrapped = wrapper(substitutes, user = request.user)
 
-    vars = {'title': "Resultats de la recherche",
-            'product_name': product_name,
-            'product_photo_url': product_photo_url,
+    else:
+        substitutes = replacement_picker(product, 0, 6)
+        substitutes_wrapped = wrapper(substitutes)
+
+    product_wrapped = wrapper([product])[0]
+
+    vars = {'title': "Remplacement du produit : {}".format(product),
+            'product': product_wrapped,
             'substitutes_wrapped': substitutes_wrapped}
             
     return render(request, "results.html", vars)
 
 def save(request):
-    
+
     if request.method == 'POST':
         
         print("[retour viewfunc] données reçues:", request.POST.dict())
@@ -61,9 +74,6 @@ def save(request):
         user_request = request.POST.get("request")
         substitute = request.POST.get('substitute')
         user_obj = request.user
-
-        if "aaampersand" in substitute:
-            substitute = substitute.replace("aaampersand", "&")
 
         if user_request == "save":
             

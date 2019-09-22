@@ -1,11 +1,5 @@
 from website.models import Product, Nutrition, Record
 
-#Que faire? 
-
-# Trouver un produit de remplacement au produit recherché (même catégorie)
-
-#obj produit : Product.objects.get(pk=1)
-
 sugary_product_categories = [
     "Biscuits et gâteaux", 
     "Barres Chocolats noirs",
@@ -25,6 +19,34 @@ sugary_product_categories = [
     "Glaces et sorbets",
     "Fruits en conserve"
     ]
+
+def product_url_builder(product_name):
+
+    if "&" in product_name:
+        product_name = product_name.replace("&", "%26")
+    
+    if " " in product_name:
+        product_name = product_name.replace(" ", "%20")
+
+    if "â" in product_name:
+        product_name = product_name.replace("â", "%C3%A2")
+    
+    if "à" in product_name:
+        product_name = product_name.replace("à", "%C3%A0")
+
+    if "'" in product_name:
+        product_name = product_name.replace("'", "%27")
+    
+    if "é" in product_name:
+        product_name = product_name.replace("é", "%C3%A9")
+
+    if "è" in product_name:
+        product_name = product_name.replace("é", "%C3%A8")
+
+    if "ç" in product_name:
+        product_name = product_name.replace("é", "%C3%A7")   
+
+    return "/product?query={}".format(product_name)
 
 def replacement_picker(product, index_start, index_end): #product est un produit obtenu via un query selector
     
@@ -57,33 +79,35 @@ def replacement_picker(product, index_start, index_end): #product est un produit
 
     return substitute #Un queryset produit plus sain en sortie
 
-def wrapper(substitutes_list, **extra_args):
+def wrapper(product_list, **extra_args):
 
-    substitutes = [] # Wrapper ajoute le statut de sauvegarde de l'utilisateur du substitut à la liste des substituts 
+    def check_save_status(user_recordings):
+        return "Sauvegardé" if user_recordings > 0 else "Sauvegarder"            
 
-    for substitute in substitutes_list:
+    products = [] # Wrapper ajoute le statut de sauvegarde de l'utilisateur du substitut à la liste des substituts 
+
+    for product in product_list:
+
+        product_name = product.product_name
+        url = product_url_builder(product_name)
 
         if "user" in extra_args:
             
-            user_recordings = Record.objects.filter(user__exact=extra_args['user']).filter(substitute__exact=substitute).count()
-
-            if user_recordings > 0:
-                substitutes += [
-                    {"product": substitute,
-                    "save_button_text": "Sauvegardé",
-                    "save_button_class": "save-link"}
-                ]
-            else:
-                substitutes += [
-                    {"product": substitute,
-                    "save_button_text": "Sauvegarder",
-                    "save_button_class": "save-link"}
-                ]
+            user_recordings = Record.objects.filter(user__exact=extra_args['user']).filter(substitute__exact=product).count()
+            save_status = check_save_status(user_recordings)
+            
+            products += [
+                {"product": product,
+                "status": save_status,
+                "url": url}
+            ]
+          
         else:
 
-            substitutes += [
-                {"product": substitute
-                }
+            products += [
+                {"product": product,
+                "url": url}
             ]
 
-    return substitutes
+    return products
+

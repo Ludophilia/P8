@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from website.models import Product, Nutrition, Media, Record
 from website.management.commands.add_off_data import Command
-from website.selection_tools import replacement_picker, sugary_product_categories
+from website.selection_tools import replacement_picker, sugary_product_categories, product_url_builder
 from website.views import results
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -772,3 +772,80 @@ class TestMyProductPage(StaticLiveServerTestCase):
 
         self.assertEqual(Record.objects.count(), 0)
 
+@tag("product")
+class TestProductPage(StaticLiveServerTestCase):
+
+    def setUp(self):
+        command = Command()
+        command.handle()
+
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)),'chromedriver'))
+
+    def tearDown(self):
+        self.driver.quit()
+
+    @tag("prodwork")
+    def test_if_the_webpage_is_correctly_displayed(self):
+
+        targeted_url = "{}{}".format(self.live_server_url, "/product")
+        print(targeted_url)
+        self.driver.get(targeted_url)
+
+        self.assertEqual(self.driver.current_url, targeted_url)
+
+    #On teste quoi maintenant?
+
+    @tag("prodred")
+    def test_if_the_link_to_a_product_page_from_the_result_page_works_perfectly(self):
+        
+        #On est en mode anonyme, je précise bien que ça ne change pas grand chose
+
+        product_list = ["orangina", "nutella", "salade de quinoa aux légumes"] #On peut en mettre plus
+        product = product_list[random.randint(0, len(product_list)-1)]
+
+        self.driver.get("{}{}".format(self.live_server_url, "/search?query={}".format(product)))
+
+        product_links = self.driver.find_elements_by_css_selector("h3 > a")
+
+        product_index = random.randint(0,len(product_links)-1)
+        selected_link = product_links[product_index]
+
+        selected_link_url = product_url_builder(selected_link.text)
+        absolute_selected_link_url = "{}{}".format(self.live_server_url, selected_link_url)
+        
+        ActionChains(self.driver).click(selected_link).perform()
+        time.sleep(2)
+
+        self.assertEqual(self.driver.current_url, absolute_selected_link_url)
+
+        #Si cliquer sur n'importe quel lien lien dans la page de résultat renvoie vers la page produit
+
+    @tag("prodat")
+    def test_if_the_right_data_is_on_the_product_page(self):
+
+        product_list = ["orangina", "nutella", "salade de quinoa aux légumes"] #On peut en mettre plus
+        product_selected = product_list[random.randint(0, len(product_list)-1)]
+
+        self.driver.get("{}{}".format(self.live_server_url, "/search?query={}".format(product_selected)))
+
+        substitutes_links = self.driver.find_elements_by_css_selector("h3 > a")
+        selected_link = substitutes_links[random.randint(0,len(substitutes_links)-1)]
+        ActionChains(self.driver).click(selected_link).perform()
+
+        time.sleep(1)
+        
+        #Ce test va se casser rapidement de toute façon, mais l'idée survivra
+
+        product_data = self.driver.find_element_by_css_selector("div[style^='pad']")
+        nutriscore = self.driver.find_elements_by_css_selector("img[src*='images/misc/nutriscore']")
+        dict_product_data = {}
+
+        for combinaison in product_data.text.split("\n"):
+            combinaison_list = combinaison.split(":")
+            if len(combinaison_list) > 1:
+                product_data_key = combinaison_list[0].replace(" ", "")
+                product_data_value = combinaison_list[1].replace(" ", "")
+                dict_product_data[product_data_key] = product_data_value
+        
+        self.assertEqual(len(dict_product_data), 6) #S'il y a 6 couples clé valeur, c'est que les données ont bien été transmises au template, indépendamment de leur qualité
+        self.assertEqual(len(nutriscore), 1) #On vérifie la présence de l'image représentant le nutriscore
