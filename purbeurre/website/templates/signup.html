@@ -1,22 +1,11 @@
 {% extends "base_mfh.html" %}
 {% load static %}
-{% load widget_tweaks %} <!-- Important pour l'app widget_tweaks -->
+{% load widget_tweaks %}
 
-{% block header_background %} "https://www.sekretaria.de/wp-content/uploads/2002/07/file_cabinet_Fotolia_76590933_Subscription_XXL_Sashkin_Website.jpg" {% endblock %}
+{% block header_background %} {% static "img/archive-samuel-zeller.jpg" %} {% endblock %}
 {% block product_name %} Création de compte {% endblock %}
 
-{% block subheader %} <!-- Ici les formulaires -->
-
-<!-- Quel est l'élément pour générer un formulaire
-On cherche quoi comme formulaires
-
-Formulaire Nom
-Formulaire Pseudo
-Formulaire Prénom
-Formulaire Mail
-Formulaire Mot de passe
-Bouton valider
--->
+{% block subheader %} 
 
 <div class="container">
    

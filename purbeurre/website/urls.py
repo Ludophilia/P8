@@ -10,5 +10,6 @@ urlpatterns = [
     path("account", views.account, name="account"),
     path("logout", views.logoutv, name="logout"),
     path("save", views.save, name="save"),
+    path("legal", views.legal, name="legal"),
     path("myproducts", views.myproducts, name="myproducts")
 ]

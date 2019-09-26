@@ -12,7 +12,9 @@
             {% for substitute in substitutes_wrapped %} 
             <div class="col-lg-4 col-10 mb-4" > 
                 <div class="card" name="{{ substitute.product }}">
-                    <img src="{{ substitute.product.media.image_full_url }}" class="card-img-top" alt="Image produit" height="350">
+                    <a href="{{ substitute.url }}">
+                        <img src="{{ substitute.product.media.image_full_url }}" class="card-img-top" alt="Image produit" style="object-fit: cover" height="350">
+                    </a>
                     <span class="n-badge bg-primary">{{ substitute.product.nutrition.nutriscore }}</span>
                     <div class="card-body" style="height:110px">
                         <h3 class="results card-title">

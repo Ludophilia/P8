@@ -1,15 +1,52 @@
 ul.errorlist.nonfield {
-    /* display: none; */
+
     list-style-type: none;
     padding: 0;
-
     width: 100%;
     margin: 2rem 0;
     font-size: 80%;
     font-weight: bold;
-    /* color: #dc3545; */
-    /* color: #ff1e00; */
     color: #ff1e00;
-
     text-align: center;
 }
+
+/* Legal */
+
+p.legal-text > a {
+    color:rgb(0, 0, 0);
+    text-decoration: underline;
+    background-color:transparent;
+}
+
+/* Exclusive results page classes */
+
+.results {
+    font-family: BlinkMacSystemFont, "Merriweather Sans", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  }
+  
+  .results.card {
+    padding: 15px;
+  }
+  
+  h2.results {
+    font-size: 23px; /* 2rem */
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    padding: 20px 0px;
+  }
+  
+  h3.results {
+    font-size: 19px; /* 2rem */
+  }
+  
+  .n-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    color: white;
+  }
+  
+  /* End of results page classes */
+  

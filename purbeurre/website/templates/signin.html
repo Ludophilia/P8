@@ -9,7 +9,7 @@
     height: 910px;
     width: 100%;
     background: linear-gradient(to top, rgba(92, 77, 66, 0.80) 50%, rgba(92, 77, 66, 0.8) 100%), 
-    url({% static "img/hapiness-time-kawin-harasai.jpg" %});
+    url("{% static 'img/hapiness-time-kawin-harasai.jpg' %}");
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: scroll;
@@ -23,7 +23,7 @@
     <div class="container" style="padding-top:72px; height:99%">
         <div class="row justify-content-center align-items-end" style="height:40%">
             <div class="col-9">
-                <img src="{% static 'img/logo_pur_beurre.png' %}" width="55" height="55" class="mx-auto d-block" alt="" style="">
+                <img src="{% static 'img/logo_pur_beurre.png' %}" width="55" height="55" class="mx-auto d-block" alt="">
                 <h1 class="text-white" style="margin: 10px 0px; text-align:center; font-size:32px" >Se connecter</h1>
             </div>
         </div>
@@ -43,7 +43,7 @@
                     {{ form.non_field_errors }}
                 </form>
                 <div class="text-white text-center" style="margin-top:20px; font-size:14.5px">
-                    Pas de compte ? <br/> <a href={% url 'signup' %}>Rejoignez-nous ! </a>
+                    Pas de compte ? <br/> <a href={% url "signup" %}>Rejoignez-nous ! </a>
                 </div>
             </div>
         </div>

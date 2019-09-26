@@ -50,8 +50,8 @@
 
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav my-2 my-lg-0 ml-auto"> <!-- ici le ml-auto Level 3 -->
-          <form class="form-inline"> <!-- Pas terrible le menu dans le <ul> -->
-              <input class="search-menu form-control mr-sm-2" type="search" placeholder="Chercher" aria-label="Search">
+          <form class="form-inline" method="GET" action="/search"> <!-- Pas terrible le menu dans le <ul> -->
+              <input class="search-menu form-control mr-sm-2" type="search" placeholder="Produit" name="query">
           </form>
           <li class="nav-item">
             <!-- Renvoie toujours vers la page de compte mais celle-ci est login required -->
@@ -69,7 +69,6 @@
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href={% url "myproducts" %}>
                 <i class="fas fa-carrot">
-                    <!-- <span class="" style="padding-left:5px">Mes aliments </span>  -->
                 </i>
             </a>
           </li>
@@ -92,8 +91,8 @@
   <!-- Footer -->
   <footer class="bg-dark py-5">
     <div class="container">
-        <div class="small text-white text-center text-muted"> Pur Beurre est une propriété de Placeholder Company</div>
-        <div class="small text-white text-center text-muted"> Mention légales | Contact</div>
+        <div class="small text-white text-center"> Pur Beurre est une propriété de Placeholder Company</div>
+        <div class="small text-white text-center text-muted"> <a class="text-white" href="{% url "legal" %}">Mention légales</a> | <a href="mailto:contact@purbeurre.fr" class="text-white">Contact</a></div>
       </div>
     </div>
   </footer>

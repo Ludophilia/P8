@@ -1,7 +1,7 @@
 {% extends "base_mfh.html" %}
 {% load static %}
 
-{% block header_background %} {% static "img/gouter-olenka-kotyk.jpg" %} {% endblock %} 
+{% block header_background %} {% static "img/food-banse.jpg" %} {% endblock %} 
 {% block product_name %} Mes substituts {% endblock %}
 
 {% block subheader %}
@@ -12,7 +12,9 @@
             {% for product in myproducts %} 
             <div class="col-lg-4 col-10 mb-4" > 
                 <div class="card" name="{{ product.product }}">
-                    <img src="{{ product.product.media.image_full_url }}" class="card-img-top" alt="..." height="400">
+                    <a href={{ product.url }}>
+                        <img src="{{ product.product.media.image_full_url }}" class="card-img-top" alt="..." style="object-fit: cover" height="400">
+                    </a>
                     <span class="n-badge bg-primary">{{ product.product.nutrition.nutriscore }}</span>
                     <div class="card-body" style="height:110px">
                         <h3 class="results card-title">
@@ -28,8 +30,7 @@
             {% else %}
             <div class="col-lg-4 col-10 mb-4" >
                 <div class="card">
-                        <img src="" class="card-img-top" alt="..." height="400">
-                        <!-- <i class="fas fa-unlink" class="card-img-top" height="400"></i> -->
+                        <img src={% static "img/pear-joy.jpg" %} class="card-img-top" alt="..." style="object-fit: cover" height="400">
                         <div class="card-body" style="height:110px">
                             <h3 class="results card-title">
                                 Ooops !!

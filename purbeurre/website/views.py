@@ -139,35 +139,35 @@ def signup(request):
 
 def signin(request):
     
-    # print("1 Vous êtes connecté en tant que: ", request.user)
-    # next = request.GET.get('next')
-    # print("YA QUOI DEDANS", next)
+    if request.user.is_authenticated:
+        return redirect(reverse("myproducts"))
 
-    if request.method == "POST":
-        form = AuthenticationForm(request, request.POST)  
+    else:   
+        if request.method == "POST":
+            form = AuthenticationForm(request, request.POST)  
 
-        if form.is_valid():
+            if form.is_valid():
 
-            user_obj = authenticate(
-                username = form.cleaned_data["username"], 
-                password = form.cleaned_data["password"]
-                ) #test aaa, aaa
+                user_obj = authenticate(
+                    username = form.cleaned_data["username"], 
+                    password = form.cleaned_data["password"]
+                    ) #test aaa, aaa
 
-            login(request, user_obj)
+                login(request, user_obj)
 
-            if request.user.is_authenticated:
-                # print("2 Vous êtes connecté en tant que: ", request.user)
-                return HttpResponseRedirect("/")
+                if request.user.is_authenticated:
+                    # print("2 Vous êtes connecté en tant que: ", request.user)
+                    return HttpResponseRedirect("/")
 
-    else:
-        form = AuthenticationForm(request)
-    
-    vars = {
-        'title': "Connexion",
-        'form' : form 
-        }
+        else:
+            form = AuthenticationForm(request)
+        
+        vars = {
+            'title': "Connexion",
+            'form' : form 
+            }
 
-    return render(request, "signin.html", vars)
+        return render(request, "signin.html", vars)
 
 @login_required()
 def account(request):
@@ -191,3 +191,9 @@ def account(request):
 def logoutv(request):
     logout(request)
     return redirect(reverse("home"))
+
+def legal(request):
+
+    vars = {'title': "Mentions (pas très) légales"}
+
+    return render(request, "legal.html", vars)

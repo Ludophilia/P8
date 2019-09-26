@@ -772,6 +772,19 @@ class TestMyProductPage(StaticLiveServerTestCase):
 
         self.assertEqual(Record.objects.count(), 0)
 
+@tag("prodwork")
+class TestProductPageDjC(TestCase):
+    
+    def setUp(self):
+        command = Command()
+        command.handle()
+        
+    def test_if_the_webpage_is_correctly_displayed(self):
+
+        self.client = Client()
+        self.response = self.client.get(reverse("product"), {'query':'Orangina'})
+        self.assertEqual(self.response.status_code, 200)
+
 @tag("product")
 class TestProductPage(StaticLiveServerTestCase):
 
@@ -783,17 +796,6 @@ class TestProductPage(StaticLiveServerTestCase):
 
     def tearDown(self):
         self.driver.quit()
-
-    @tag("prodwork")
-    def test_if_the_webpage_is_correctly_displayed(self):
-
-        targeted_url = "{}{}".format(self.live_server_url, "/product")
-        print(targeted_url)
-        self.driver.get(targeted_url)
-
-        self.assertEqual(self.driver.current_url, targeted_url)
-
-    #On teste quoi maintenant?
 
     @tag("prodred")
     def test_if_the_link_to_a_product_page_from_the_result_page_works_perfectly(self):
@@ -834,9 +836,7 @@ class TestProductPage(StaticLiveServerTestCase):
 
         time.sleep(1)
         
-        #Ce test va se casser rapidement de toute façon, mais l'idée survivra
-
-        product_data = self.driver.find_element_by_css_selector("div[style^='pad']")
+        product_data = self.driver.find_element_by_css_selector("h2 + p")
         nutriscore = self.driver.find_elements_by_css_selector("img[src*='images/misc/nutriscore']")
         dict_product_data = {}
 
@@ -847,5 +847,23 @@ class TestProductPage(StaticLiveServerTestCase):
                 product_data_value = combinaison_list[1].replace(" ", "")
                 dict_product_data[product_data_key] = product_data_value
         
-        self.assertEqual(len(dict_product_data), 6) #S'il y a 6 couples clé valeur, c'est que les données ont bien été transmises au template, indépendamment de leur qualité
+        self.assertEqual(len(dict_product_data), 5) #S'il y a 5 couples clé valeur, c'est que les données nutritionelles ont bien été transmises au template, indépendamment de leur qualité
         self.assertEqual(len(nutriscore), 1) #On vérifie la présence de l'image représentant le nutriscore
+
+@tag("legwork")
+class TestLegalPageDjC(StaticLiveServerTestCase):
+    
+    def test_if_the_webpage_is_correctly_displayed(self):
+
+        self.client = Client()
+        self.response = self.client.get(reverse("legal"))
+        self.assertEqual(self.response.status_code, 200) 
+
+@tag("isitlegal")
+class TestLegalPage(StaticLiveServerTestCase):
+
+    def setUp(self):
+        self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)),'chromedriver'))
+
+    def tearDown(self):
+        self.driver.quit()
