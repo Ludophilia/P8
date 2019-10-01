@@ -30,7 +30,10 @@ else:
 
 #Allowed hosts
 
-ALLOWED_HOSTS = [] #["*"] pour DEBUG = False
+if os.environ.get("ENV") == 'PRODUCTION':
+    ALLOWED_HOSTS = ["purbeurr8.herokuapp.com/"] 
+else:
+    ALLOWED_HOSTS = [] #["*"] pour DEBUG = False
 
 # Application definition
 
