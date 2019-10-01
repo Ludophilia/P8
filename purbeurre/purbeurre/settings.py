@@ -10,11 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-import os
+import os, dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -23,7 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'kh&*ad=1q3ugm6uf5tdh7g#=2pe9r@g*2$224q0s0md_q(%)p4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
+if os.environ.get('ENV') == 'PRODUCTION':
+    DEBUG = False
+else:
+    DEBUG = True
+
+#Allowed hosts
 
 ALLOWED_HOSTS = [] #["*"] pour DEBUG = False
 
@@ -42,6 +47,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'purbeurre.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -84,7 +89,6 @@ DATABASES = {
         'PORT': '5432'
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -104,7 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -118,10 +121,28 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
 
 LOGIN_URL = "/signin"
+
+#For the staticfiles in Heroku
+
+if os.environ.get('ENV') == 'PRODUCTION':
+    PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) #Donc purbeurre/purbeurre
+    STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+    STATICFILES_DIRS = (
+        os.path.join(PROJECT_ROOT, 'static'),
+    ) # Extra places for collectstatic to find static files.
+    
+    # Simplified static file serving.
+    # https://warehouse.python.org/project/whitenoise/
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+    #dj-database-url
+    db_from_env = dj_database_url.config(conn_max_age=500)
+    DATABASES['default'].update(db_from_env)
+
+    #

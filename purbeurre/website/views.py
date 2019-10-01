@@ -10,6 +10,8 @@ from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import HttpResponse, Http404
 
+import os
+
 def home(request):
     
     var = {'title': "P8 - Plateforme pour Amateurs de Nutella"}
