@@ -15,7 +15,7 @@ import os
 def home(request):
     
     var = {'title': "P8 - Plateforme pour Amateurs de Nutella"}
-    
+        
     return render(request, "home.html", var)
 
 @login_required()

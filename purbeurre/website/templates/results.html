@@ -22,7 +22,7 @@
                         </h3>
                         {% if user.is_authenticated %} 
                         <div class="card-subtitle text-muted">
-                            <i class="far fa-save"></i> <a href="/save" class="mx-1 save-link">{{ substitute.status }}</a> 
+                            <i class="far fa-save"></i> <a href="{% url 'save' %}" class="mx-1 save-link">{{ substitute.status }}</a> 
                         </div>
                         {% else %}
                         <div class="card-subtitle text-muted">
