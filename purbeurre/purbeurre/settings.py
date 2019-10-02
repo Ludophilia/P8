@@ -33,7 +33,7 @@ else:
 #Allowed hosts
 
 if os.environ.get("ENV") == 'PRODUCTION':
-    ALLOWED_HOSTS = ["purbeurr8.herokuapp.com"] 
+    ALLOWED_HOSTS = ["pur8eurre.herokuapp.com"] 
 else:
     ALLOWED_HOSTS = [] #["*"] pour DEBUG = False
 
