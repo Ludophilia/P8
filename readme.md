@@ -13,4 +13,4 @@ Fonctionnalités :
 
 - Django
 - PostgreSQL
-- Et bien plus encore (aahahahahaha venir 🙃)
+- Voir requirements.txt
