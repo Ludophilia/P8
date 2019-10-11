@@ -85,3 +85,62 @@ for (link of save_links) {
         }    
     })
 }
+
+// Pour déclencher la fenetre qui suggère des requêtes de recherche
+
+var search_form = document.querySelectorAll("form")[1]
+var search_input = document.querySelectorAll("input[type=search]")[1]
+
+// Un observateur d'évènements, qui après un input clavier, envoie une requête à la viewfunction, si la recherche est fructueuse, une fenetre s'affiche avec les suggestions
+
+search_input.addEventListener("keyup", (e) => {
+    
+    // Envoyer la requête au serveur
+    
+    // Ajouter ou rafrachir la fenetre
+
+    if (document.querySelectorAll(".autocomplete-items").length === 1) {
+        search_form.removeChild(document.querySelector(".autocomplete-items"))
+        search_form.insertAdjacentHTML("beforeend", "<div class='autocomplete-items'></div>")
+    } else {
+        search_form.insertAdjacentHTML("beforeend", "<div class='autocomplete-items'></div>")
+    }
+
+    // AJouter les suggestions à la fenetre
+
+    ex_data = {"suggestions": ["Perrier fines bulles", "Eau de source gazéifiée", "La Salvetat", "Rozana", "Cristaline", "Pepsi max zero"]} // Ex de données envoyées par la view à chaque suggestion
+
+    ex_data.suggestions.forEach(
+        suggestion => document.querySelector(".autocomplete-items").insertAdjacentHTML("beforeend",
+        `<div> ${suggestion} </div>`)
+    )
+
+    // Cache la fenêtre si la recherche est vide, la remettre dans le cas contraire
+    
+    if (e.target.value === "") {
+        document.querySelector(".autocomplete-items").classList.add("d-none") 
+    } else if (document.querySelector(".autocomplete-items").classList.contains("d-none")) {
+        document.querySelector(".autocomplete-items").classList.remove("d-none")
+    }
+})
+
+// Retrouver la fenetre quand on remet le focus sur l'input
+
+search_input.addEventListener("focus", (e) => { 
+    
+    if (e.target.value !== "") {
+        if (document.querySelector(".autocomplete-items").classList.contains("d-none")) {
+            document.querySelector(".autocomplete-items").classList.remove("d-none")
+        }
+    }
+})
+
+// Masquer la fenetre quand on perd le focus...
+
+search_input.addEventListener("blur", (e) => { 
+
+    if (document.querySelectorAll(".autocomplete-items").length > 0) {
+        document.querySelector(".autocomplete-items").classList.add("d-none")
+    }
+
+})

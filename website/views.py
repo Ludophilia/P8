@@ -22,6 +22,7 @@ def home(request):
 def myproducts(request):
 
     myrecords = Record.objects.filter(user__exact=request.user)
+    # print(get_list_or_404(Record.objects.all()))
     myproducts = [record.substitute for record in myrecords] 
     my_products_wrapped = wrapper(myproducts)
 
