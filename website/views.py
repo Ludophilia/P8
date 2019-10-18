@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import HttpResponse, Http404
 
-import os
+import os, json
 
 def home(request):
     
@@ -44,6 +44,22 @@ def product(request):
                 "product": product}
 
         return render(request, "product.html", vars)
+
+def suggest(request):
+
+    # Récupérer ce que le client a renvoyé
+
+    query = request.GET.get("query") 
+    
+    # Le traiter (aller chercher dans la base ce qu'il faut)
+
+    products = Product.objects.filter(product_name__istartswith=query)[0:8] 
+    suggestions = [product.product_name for product in products]
+    search_suggestions_js = json.dumps({"suggestions": suggestions}, ensure_ascii=False)
+
+    # Renvoyer les données
+
+    return HttpResponse(search_suggestions_js)
 
 def results(request):
     
