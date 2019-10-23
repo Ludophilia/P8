@@ -59,16 +59,32 @@ h3.results {
     left: 0px; 
 }
 
+form[class=input-group-fake] .autocomplete-items {
+    width:96%;
+}
+
 .ac-item {
     text-align: left;
-    padding: 6px 0.75rem; /* Ou 12px si rem_base = 16px*/
+    padding: 6px 0.75rem;
 }
 
 .ac-item:hover {
-    background-color: #f4623a !important; /* Og: #f4623a */
+    background-color: #f4623a !important;
     color: #ffffff;
 }
 
 input[type=search]::-webkit-search-cancel-button {
     display:none;
+}
+
+.input-group-fake {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
 }

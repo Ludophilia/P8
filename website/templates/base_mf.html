@@ -49,19 +49,21 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav my-2 my-lg-0 ml-auto"> <!-- ici le ml-auto Level 3 -->
-          <form class="form-inline" method="GET" action="/search"> <!-- Pas terrible le menu dans le <ul> -->
-              <input class="search-menu form-control mr-sm-2" type="search" placeholder="Produit" name="query">
+        <ul class="navbar-nav my-2 my-lg-0 ml-auto">
+          <form class="input-group-fake" method="GET" action="/search">
+            <!-- <div class=""> -->
+                <input class="search-menu form-control mr-sm-2" type="search" placeholder="Produit" name="query">
+                <button class="btn btn-primary d-none" type="submit" id="searchbar01">Remplacer</button>
+            <!-- </div> -->
           </form>
           <li class="nav-item">
-            <!-- Renvoie toujours vers la page de compte mais celle-ci est login required -->
             <a class="nav-link js-scroll-trigger" href={% url "account" %}> 
                 <i class="fas fa-user">
-                    {% if user.is_authenticated %} 
+                    {% if user.is_authenticated %}
                     <span class="" style="padding-left:5px">Mon compte</span> 
-                    {% else %} 
+                    {% else %}
                     <span class="" style="padding-left:5px">Se connecter</span>
-                    {% endif %}  
+                    {% endif %}
                 </i>
             </a>
           </li>

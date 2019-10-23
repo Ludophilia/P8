@@ -10692,7 +10692,7 @@ header.masthead h1 {
   font-size: 2.25rem;
 }
 
-@media (min-width: 992px) {
+@media (min-width: 992px) { 
   header.masthead {
     height: 100vh;
     min-height: 40rem;
@@ -10706,6 +10706,24 @@ header.masthead h1 {
     font-size: 3rem;
   }
 }
+
+@media (min-width: 400px) and (max-width: 991px) { 
+    header.masthead {
+      height: 100vh;
+      min-height: 40rem;
+      padding-top: 72px;
+      padding-bottom: 0;
+    }
+    header.masthead p {
+      font-size: 1.15rem;
+    }
+    header.masthead h1 {
+      font-size: 2.75rem;
+    }
+    header.masthead h2 {
+        font-size: 1.75rem;
+    }
+  }
 
 @media (min-width: 1200px) {
 header.masthead h1 {

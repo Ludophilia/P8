@@ -109,82 +109,96 @@ for (link of save_links) {
 
 // Pour déclencher la fenetre qui suggère des requêtes de recherche
 
-var search_input = document.querySelectorAll("input[type=search]")[1]
+function displaySuggestions (search_suggestions_js, extra_par) {
 
-function displaySuggestions (search_suggestions_js, query) {
+    // search_form doit être rendu souple, pourquoi pas e.target.parentNode
 
-    var search_form = document.querySelectorAll("form")[1]
+    // var search_form = document.querySelectorAll("form")[1]
+
+    var query = extra_par.query
+    var parent_form = extra_par.parent_form
+
     var search_suggestions = JSON.parse(search_suggestions_js)
 
     // Ajouter ou rafrachir la fenetre
 
-    if (document.querySelectorAll(".autocomplete-items").length >= 1) {
-        search_form.removeChild(document.querySelector(".autocomplete-items"))
+    if (parent_form.querySelectorAll(".autocomplete-items").length >= 1) {
+        parent_form.removeChild(parent_form.querySelector(".autocomplete-items"))
     }
-    search_form.insertAdjacentHTML("beforeend", "<div class='autocomplete-items'></div>")
+    parent_form.insertAdjacentHTML("beforeend", "<div class='autocomplete-items'></div>")
     
     // AJouter les suggestions à la fenetre.
 
     search_suggestions.suggestions.forEach(
         (suggestion) => {
-            suggested = suggestion.slice(query.length) // Ou slice(0, query.length) si on veut mettre en valeur ce qu'à tapé l'utilisateur ou slice(query.length) si on veut mettre les suggestions en valeur
-            suggestion_og = suggestion
+            var suggested = suggestion.slice(query.length) // Ou slice(0, query.length) si on veut mettre en valeur ce qu'à tapé l'utilisateur ou slice(query.length) si on veut mettre les suggestions en valeur
+            var search_input = parent_form.querySelector("input")
 
             suggestion = suggestion.replace(suggested, `<b>${suggested}</b>`)
-            document.querySelector(".autocomplete-items").insertAdjacentHTML("beforeend",
+            parent_form.querySelector(".autocomplete-items").insertAdjacentHTML("beforeend",
             `<div class="ac-item"> ${suggestion} </div>`)
 
-            document.querySelector(".ac-item:last-child").addEventListener("click", (event) => {
-                
+            parent_form.querySelector(".ac-item:last-child").addEventListener("click", (event) => {
+                // On récupère la valeur
                 if (event.target.classList.length === 0) {
                     search_input.value = event.target.parentNode.textContent.trim()
                 } else {
                     search_input.value = event.target.textContent.trim()
                 }
-                document.querySelector("#searchbar02").click()
+                // simuler appui sur la touche entrée
+                parent_form.querySelector("button").click()
             })
         })
 }
 
 // Un observateur d'évènements, qui après un input clavier, envoie une requête à la viewfunction, si la recherche est fructueuse, une fenetre s'affiche avec les suggestions
 
+var search_inputs = document.querySelectorAll("input[type=search]")
 
-search_input.addEventListener("keyup", (e) => {
-    
-    // Envoyer la requête au serveur
+for (search_input of search_inputs) {
 
-    var query = urlEncodeString(e.target.value)
+    search_input.addEventListener("keyup", (e) => {
+        
+        // Envoyer la requête au serveur
 
-    if (query.length > 0) {
-        ajaxCommunicate("GET", `/suggest?query=${query}`, displaySuggestions, null, query)
-    } else {
-        if (document.querySelectorAll(".autocomplete-items").length > 0) {
-            document.querySelector(".autocomplete-items").style.display = "none"
-        } // Cache la fenêtre si la recherche est vide, elle sera supprimée et reconstruite à la prochaine requête
-    }
-})
+        var query = urlEncodeString(e.target.value)
+        var parent_form = e.target.parentNode
 
-// Retrouver la fenetre quand on remet le focus sur l'input
-
-search_input.addEventListener("focus", (e) => { 
-    
-    if (e.target.value !== "") {
-        if (document.querySelector(".autocomplete-items").style.display === "none") {
-            document.querySelector(".autocomplete-items").style.display = "block"
+        if (query.length > 0) {
+            ajaxCommunicate("GET", `/suggest?query=${query}`, displaySuggestions, null, {"query": query, "parent_form": parent_form})
+        } else {
+            if (parent_form.querySelectorAll(".autocomplete-items").length > 0) {
+                parent_form.querySelector(".autocomplete-items").classList.add("d-none")
+            } // Cache la fenêtre si la recherche est vide, elle sera supprimée et reconstruite à la prochaine requête
         }
-    }
-})
+    })
 
-// Masquer la fenetre quand on perd le focus...
+    // Retrouver la fenetre quand on remet le focus sur l'input
 
-search_input.addEventListener("blur", (e) => {
-
-    if (e.target.value !== "") {
-        if (document.querySelectorAll(".autocomplete-items").length > 0) {
-
-            setTimeout(() => {
-                document.querySelector(".autocomplete-items").style.display = "none"
-            }, 200) // Pour contrer le fait que Le blur se déclenche avant le clic sur la fenetre autocomplete.
+    search_input.addEventListener("focus", (e) => {
+        
+        var parent_form = e.target.parentNode
+        
+        if (e.target.value !== "") {
+            if (parent_form.querySelector(".autocomplete-items").classList.contains("d-none")) {
+                parent_form.querySelector(".autocomplete-items").classList.remove("d-none")
+            }
         }
-    }
-})
+    })
+
+    // Masquer la fenetre quand on perd le focus...
+
+    search_input.addEventListener("blur", (e) => {
+        
+        var parent_form = e.target.parentNode
+
+        if (e.target.value !== "") {
+            if (parent_form.querySelectorAll(".autocomplete-items").length > 0) {
+
+                setTimeout(() => {
+                    parent_form.querySelector(".autocomplete-items").classList.add("d-none")
+                }, 200) // Pour contrer le fait que Le blur se déclenche avant le clic sur la fenetre autocomplete.
+            }
+        }
+    })
+}
