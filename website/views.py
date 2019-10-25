@@ -53,7 +53,7 @@ def suggest(request):
     
     # Le traiter (aller chercher dans la base ce qu'il faut)
 
-    products = Product.objects.filter(product_name__istartswith=query)[0:8] 
+    products = Product.objects.filter(product_name__istartswith=query).order_by('product_name', 'category')[0:8] 
     suggestions = [product.product_name for product in products]
     search_suggestions_js = json.dumps({"suggestions": suggestions}, ensure_ascii=False)
 
