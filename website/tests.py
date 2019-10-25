@@ -145,15 +145,18 @@ class TestProductSelectorModule(TestCase):
             ord(substitute.nutrition.nutriscore), 
             ord(random_product.nutrition.nutriscore)) 
 
+        print("[Retour] Est-ce le rempl est moins gras ?")
         self.assertLessEqual(
             substitute.nutrition.saturated_fat_100g, 
             random_product.nutrition.saturated_fat_100g)
 
         if random_product.category in sugary_product_categories:
+            print("[Retour] Est-ce le rempl est moins sucré ?")
             self.assertLessEqual(
                 substitute.nutrition.sugars_100g, 
                 random_product.nutrition.sugars_100g)
         else:
+            print("[Retour] Est-ce le rempl est moins salé ?")
             self.assertLessEqual(
                 substitute.nutrition.salt_100g, 
                 random_product.nutrition.salt_100g)
