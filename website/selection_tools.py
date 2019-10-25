@@ -48,36 +48,36 @@ def product_url_builder(product_name):
 
     return "/product?query={}".format(product_name)
 
-def replacement_picker(product, index_start, index_end): #product est un produit obtenu via un query selector
+def replacement_picker(product, index_start, index_end):
     
-    # Le but : un produit en entrée
+    other_product_treatment = ("nutrition__nutriscore", "nutrition__saturated_fat_100g", "nutrition__salt_100g", "nutrition__sugars_100g")
+    sugary_product_treatment = ("nutrition__nutriscore", "nutrition__sugars_100g", "nutrition__saturated_fat_100g", "nutrition__salt_100g")
+
     if type(index_start) == int and type(index_end) == int:
 
         if product.category in sugary_product_categories: #On peut aussi modifier l'ordre du traitement en fonction des aliments. Les aliments sucres auront un ordre de filtrage different des aliments salés.
-
-            substitute = Product.objects.filter(
-                    category__exact=product.category    #Produit de la même category
-                ).order_by(
-                    "nutrition__nutriscore",
-                    "nutrition__sugars_100g",
-                    "nutrition__saturated_fat_100g",
-                    "nutrition__salt_100g"
-                )[index_start:index_end]
+            pass
 
         else:
-            
-            substitute = Product.objects.filter(
+            pass
+
+        substitute = Product.objects.filter(
                     category__exact=product.category    #Produit de la même category
-                ).order_by(
-                    "nutrition__nutriscore",
-                    "nutrition__saturated_fat_100g",
-                    "nutrition__salt_100g",
-                    "nutrition__sugars_100g"
-                )[index_start:index_end]
+                )[index_start:index_end]    
+                
+            # substitute = Product.objects.filter(
+            #         category__exact=product.category    #Produit de la même category
+            #     ).order_by(
+            #         "nutrition__nutriscore",
+            #         "nutrition__saturated_fat_100g",
+            #         "nutrition__salt_100g",
+            #         "nutrition__sugars_100g"
+            #     )[index_start:index_end]
+
     else:
         raise TypeError("index_start et index_end doivent être des int")
 
-    return substitute #Un queryset produit plus sain en sortie
+    return substitute
 
 def wrapper(product_list, **extra_args):
 

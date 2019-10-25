@@ -138,34 +138,25 @@ class TestProductSelectorModule(TestCase):
         
         random_product = Product.objects.all()[product_id]
         substitute = replacement_picker(random_product, 0,1)[0] #  Determiner produit avec replacement_picker
-
-        print("SUBSTITUTE", substitute)
-
-        print("RANDOM PRODUCT:",
-            random_product.product_name,
-            random_product.nutrition.nutriscore,
-            random_product.nutrition.saturated_fat_100g,
-            random_product.nutrition.sugars_100g,
-            random_product.nutrition.salt_100g)
-
-        # for substitute in substitute: 
-        print("SUBSTITUTE",
-            substitute.product_name,
-            substitute.nutrition.nutriscore,
-            substitute.nutrition.saturated_fat_100g,
-            substitute.nutrition.sugars_100g,
-            substitute.nutrition.salt_100g)
         
         # Non rigoureux : on aurait du vérifier pour toutes les valeurs mais bon... On va s'arrêter là, ce n'est qu'un exercice.
 
-        self.assertLessEqual(ord(substitute.nutrition.nutriscore), ord(random_product.nutrition.nutriscore)) 
+        self.assertLessEqual(
+            ord(substitute.nutrition.nutriscore), 
+            ord(random_product.nutrition.nutriscore)) 
 
-        self.assertLessEqual(substitute.nutrition.saturated_fat_100g, random_product.nutrition.saturated_fat_100g)
+        self.assertLessEqual(
+            substitute.nutrition.saturated_fat_100g, 
+            random_product.nutrition.saturated_fat_100g)
 
         if random_product.category in sugary_product_categories:
-            self.assertLessEqual(substitute.nutrition.sugars_100g, random_product.nutrition.sugars_100g)
+            self.assertLessEqual(
+                substitute.nutrition.sugars_100g, 
+                random_product.nutrition.sugars_100g)
         else:
-            self.assertLessEqual(substitute.nutrition.salt_100g, random_product.nutrition.salt_100g)
+            self.assertLessEqual(
+                substitute.nutrition.salt_100g, 
+                random_product.nutrition.salt_100g)
 
 @tag("replacement")
 class TestProductReplacementFunction(StaticLiveServerTestCase):
