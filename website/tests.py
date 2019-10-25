@@ -132,21 +132,25 @@ class TestProductSelectorModule(TestCase):
             substitute = replacement_picker(random_product, "a", "b")
 
     @tag("best-result")
-    def test_if_the_first_replacement_prodiuct_is_better_from_a_nutrition_standpoint(self):
+    def test_if_the_first_replacement_product_is_better_from_a_nutrition_standpoint(self):
     
         product_id = random.randint(0, len(Product.objects.all())-1)
         
-        random_product = Product.objects.get(pk=product_id)
-        substitute = replacement_picker(random_product, 0,1) #  Determiner produit avec replacement_picker
+        random_product = Product.objects.all()[product_id]
+        substitute = replacement_picker(random_product, 0,1)[0] #  Determiner produit avec replacement_picker
 
-        print(random_product.product_name,
+        print("SUBSTITUTE", substitute)
+
+        print("RANDOM PRODUCT:",
+            random_product.product_name,
             random_product.nutrition.nutriscore,
             random_product.nutrition.saturated_fat_100g,
             random_product.nutrition.sugars_100g,
             random_product.nutrition.salt_100g)
 
         # for substitute in substitute: 
-        print(substitute.product_name,
+        print("SUBSTITUTE",
+            substitute.product_name,
             substitute.nutrition.nutriscore,
             substitute.nutrition.saturated_fat_100g,
             substitute.nutrition.sugars_100g,
@@ -167,16 +171,15 @@ class TestProductSelectorModule(TestCase):
 class TestProductReplacementFunction(StaticLiveServerTestCase):
     
     def setUp(self):
+        self.command = Command()
+        self.command.handle()
         self.driver = webdriver.Chrome(os.path.join(os.path.dirname(os.path.dirname(__file__)), "chromedriver"))
    
     def tearDown(self):
         self.driver.quit() 
 
-    @tag("repl_working?")
+    @tag("repl_workin")
     def test_if_the_product_replacement_is_working_correctly(self):
-        
-        self.command = Command()
-        self.command.handle()
 
         products = ["bâtonnets de surimi", "Orangina", "Perrier fines bulles", "Pâtes Spaghetti au blé complet", "Salade de quinoa aux légumes", "Magnum Double Caramel"]
         substitutes = ["Filets de Colin Panés", "Cristaline", "Cristaline", "Coquillettes", "Betteraves à la Moutarde à l'Ancienne", "Les bios vanille douce sava"]
