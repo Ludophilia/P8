@@ -53,16 +53,17 @@ def replacement_picker(product, index_start, index_end):
     if type(index_start) == int and type(index_end) == int:
 
         substitute = Product.objects.filter(
-            category__exact=product.category).order_by(
-            "nutrition__nutriscore")
+            category__exact=product.category)
 
         if product.category in sugary_product_categories: 
-            substitute = substitute.order_by("nutrition__sugars_100g", 
+            substitute = substitute.order_by("nutrition__nutriscore",
+                "nutrition__sugars_100g", 
                 "nutrition__saturated_fat_100g", 
                 "nutrition__salt_100g")
 
         else:
-            substitute = substitute.order_by("nutrition__saturated_fat_100g", 
+            substitute = substitute.order_by("nutrition__nutriscore",
+                "nutrition__saturated_fat_100g", 
                 "nutrition__salt_100g", 
                 "nutrition__sugars_100g")
 

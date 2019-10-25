@@ -132,34 +132,24 @@ class TestProductSelectorModule(TestCase):
             substitute = replacement_picker(random_product, "a", "b")
 
     @tag("best-result")
-    def test_if_the_first_replacement_product_is_better_from_a_nutrition_standpoint(self):
-    
-        product_id = random.randint(0, len(Product.objects.all())-1)
+    def test_if_the_replacement_product_is_better_from_a_nutrition_standpoint(self):
         
-        random_product = Product.objects.all()[product_id]
-        substitute = replacement_picker(random_product, 0,1)[0] #  Determiner produit avec replacement_picker
-        
-        # Non rigoureux : on aurait du vérifier pour toutes les valeurs mais bon... On va s'arrêter là, ce n'est qu'un exercice.
+        products = Product.objects.all()
 
-        self.assertLessEqual(
-            ord(substitute.nutrition.nutriscore), 
-            ord(random_product.nutrition.nutriscore)) 
+        for product in products:
+            
+            random_product = product
+            substitute = replacement_picker(random_product, 0,1)[0] 
 
-        print("[Retour] Est-ce le rempl est moins gras ?")
-        self.assertLessEqual(
-            substitute.nutrition.saturated_fat_100g, 
-            random_product.nutrition.saturated_fat_100g)
+            print("[Retour] Produit:", random_product)
+            print("[Retour] Substitut:", substitute)
 
-        if random_product.category in sugary_product_categories:
-            print("[Retour] Est-ce le rempl est moins sucré ?")
+            print("[Retour] Est-ce le rempl a un meilleur nutriscore ou égal ?")
             self.assertLessEqual(
-                substitute.nutrition.sugars_100g, 
-                random_product.nutrition.sugars_100g)
-        else:
-            print("[Retour] Est-ce le rempl est moins salé ?")
-            self.assertLessEqual(
-                substitute.nutrition.salt_100g, 
-                random_product.nutrition.salt_100g)
+                ord(substitute.nutrition.nutriscore), 
+                ord(random_product.nutrition.nutriscore))
+
+        print("[Retour] Nombre de produits :", products.count())
 
 @tag("replacement")
 class TestProductReplacementFunction(StaticLiveServerTestCase):
