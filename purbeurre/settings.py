@@ -137,7 +137,7 @@ LOGIN_URL = "/signin"
 
 #For the staticfiles in Heroku
 
-if os.environ.get('ENV') == 'PRODUCTION':
+if os.environ.get('ENV') == 'DEVELOPMENT' or os.environ.get('ENV') == 'PRODUCTION': #PRODUCTION uniquement noramellement
     PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) #Donc purbeurre/purbeurre
     STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
     STATICFILES_DIRS = (
@@ -151,5 +151,3 @@ if os.environ.get('ENV') == 'PRODUCTION':
     #dj-database-url
     db_from_env = dj_database_url.config(conn_max_age=500)
     DATABASES['default'].update(db_from_env)
-
-    #
