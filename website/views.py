@@ -65,7 +65,7 @@ def results(request):
     
     # Record.objects.all().delete() #Suppression rapide. All obligatoire?
 
-    query = request.GET.get('query')
+    query = request.GET.get('query').strip()
     product = get_list_or_404(Product, product_name__iexact=query)[0]
     
     if request.user.is_authenticated:

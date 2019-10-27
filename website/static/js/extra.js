@@ -63,7 +63,8 @@ function urlEncodeString(string) {
 
     conversion_table = {
         "&":"%26",
-        ";":"%3B"
+        ";":"%3B",
+        " ":"%20"
     }
 
     Object.entries(conversion_table).forEach(([sym,eqv]) => {
@@ -161,7 +162,7 @@ for (search_input of search_inputs) {
         
         // Envoyer la requête au serveur
 
-        var query = urlEncodeString(e.target.value)
+        var query = urlEncodeString(e.target.value.trim())
         var parent_form = e.target.parentNode
 
         if (query.length > 0) {
