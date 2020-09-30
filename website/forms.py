@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
 
 class RegistrationForm(forms.Form):
     first_name = forms.CharField(label='Prenom', max_length=50)
