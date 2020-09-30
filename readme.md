@@ -23,8 +23,8 @@ Les données alimentaires indispensables au bon fonctionnement de site sont grac
 ### Partie serveur:
 - Python 3.6 <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" width=16 height=16>
 - Web framework Django <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Django_logo.svg" width=48 height=16>
-- et d'autres modules à voir dans le pipfile ou requirements.txt (requests...)
 - Base de données PostgreSQL <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg?uselang=fr" width=16 height=16>
+- et d'autres modules python à voir dans le pipfile ou requirements.txt (requests...)
 
 ### API : 
 - **OpenFoodFacts** pour remplir la base de données de donées alimentaires

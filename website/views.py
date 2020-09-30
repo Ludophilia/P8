@@ -1,7 +1,6 @@
+import os, json
+
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
-from website.models import Media, Product, Record
-from website.selection_tools import replacement_picker, wrapper, product_url_builder
-from website.forms import RegistrationForm, SignInForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
@@ -10,7 +9,9 @@ from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import HttpResponse, Http404
 
-import os, json
+from website.models import Media, Product, Record
+from website.selection_tools import replacement_picker, wrapper, product_url_builder
+from website.forms import RegistrationForm, SignInForm
 
 def home(request):
     

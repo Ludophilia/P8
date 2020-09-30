@@ -10,37 +10,25 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
-import os, dj_database_url
+import os
+
+import dj_database_url
+
+# Quick-start development settings - unsuitable for production # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+
+IS_PROD_ENV = os.environ.get('ENV') == 'PRODUCTION'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# SECURITY WARNING: keep the secret key used in production secret!
-
-if os.environ.get("ENV") == 'DEVELOPMENT':
-    SECRET_KEY = 'kh&*ad=1q3ugm6uf5tdh7g#=2pe9r@g*2$224q0s0md_q(%)p4'
-elif os.environ.get("ENV") == 'PRODUCTION':
-    SECRET_KEY = os.environ.get("SECRET_KEY")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-
-if os.environ.get('ENV') == 'PRODUCTION':
-    DEBUG = False
-else:
-    DEBUG = True
+DEBUG = False if IS_PROD_ENV else True
 
 #Allowed hosts
-
-if os.environ.get("ENV") == 'PRODUCTION':
-    ALLOWED_HOSTS = ["pur8eurre.herokuapp.com"] 
-else:
-    ALLOWED_HOSTS = [] #["*"] pour DEBUG = False
+ALLOWED_HOSTS = ["pur8eurre.herokuapp.com"] if IS_PROD_ENV else [] #["*"] pour DEBUG = False
 
 # Application definition
-
 INSTALLED_APPS = [
     'website.apps.WebsiteConfig',
     'widget_tweaks',
@@ -83,9 +71,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'purbeurre.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
+# Database # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 DATABASES = { 
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -97,9 +83,11 @@ DATABASES = {
     }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
+if IS_PROD_ENV:
+    #dj-database-url # Modify the DATABASE dict default key above to adapt it to heroku 
+    DATABASES['default'].update(dj_database_url.config(conn_max_age=500)) # {'NAME': 'dkl...', 'USER': 'ipx...'...}
 
+# Password validation # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -115,9 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/2.2/topics/i18n/
-
+# Internationalization # https://docs.djangoproject.com/en/2.2/topics/i18n/
 LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'Europe/Paris'
@@ -128,26 +114,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
-
-STATIC_URL = '/static/'
-
 LOGIN_URL = "/signin"
 
-#For the staticfiles in Heroku
+# Static files (CSS, JavaScript, Images) # https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATIC_URL = '/static/'
 
-if os.environ.get('ENV') == 'DEVELOPMENT' or os.environ.get('ENV') == 'PRODUCTION': #PRODUCTION uniquement noramellement
-    PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__)) #Donc purbeurre/purbeurre
-    STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-    STATICFILES_DIRS = (
-        os.path.join(PROJECT_ROOT, 'static'),
-    ) # Extra places for collectstatic to find static files.
-    
-    # Simplified static file serving.
-    # https://warehouse.python.org/project/whitenoise/
+#For staticfiles in Heroku
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (os.path.join(PROJECT_ROOT, 'static'),)
+
+if IS_PROD_ENV:
+    # Simplified static file serving. # https://warehouse.python.org/project/whitenoise/
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-    #dj-database-url
-    db_from_env = dj_database_url.config(conn_max_age=500)
-    DATABASES['default'].update(db_from_env)
