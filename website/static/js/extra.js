@@ -15,6 +15,9 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// Better
+// getCookie = (name) => document.cookie.split("; ").filter((c) => c.slice(0, name.length) === name)[0]
+
 // Pour renvoyer les informations de produit au serveur 
 
 function ajaxCommunicate(method, url, callback, data, extra_par) {
