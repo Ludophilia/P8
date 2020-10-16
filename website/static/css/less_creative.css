@@ -48,6 +48,10 @@ h3.results {
     color: white;
 }
 
+.card {
+    border: none;
+}
+
 /* Autocomplete feature */
 
 .autocomplete-items {
