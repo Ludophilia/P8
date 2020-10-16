@@ -43,13 +43,38 @@ h3.results {
     position: absolute;
     top: -10px;
     right: -10px;
-    padding: 5px 10px;
+    padding: 5px 9px;
     border-radius: 50%;
+    line-height: 18px;
     color: white;
+}
+
+.n-level-a {
+    background: #0b8344;
+}
+
+.n-level-b {
+    background: #86bb30;
+}
+
+.n-level-c {
+    background: #ffcc05;
+}
+
+.n-level-d {
+    background: #ee8202;
+}
+
+.n-level-e {
+    background: #e64113;
 }
 
 .card {
     border: none;
+}
+
+.card-body {
+    padding-left: 0px;
 }
 
 /* Autocomplete feature */

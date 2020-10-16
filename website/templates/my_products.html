@@ -15,7 +15,7 @@
                     <a href={{ product.url }}>
                         <img src="{{ product.product.media.image_full_url }}" class="card-img-top" alt="..." style="object-fit: cover" height="400">
                     </a>
-                    <span class="n-badge bg-primary">{{ product.product.nutrition.nutriscore }}</span>
+                    <span class="n-badge n-level-{{ product.product.nutrition.nutriscore }}">{{ product.product.nutrition.nutriscore }}</span>
                     <div class="card-body" style="height:110px">
                         <h3 class="results card-title">
                             <a href={{ product.url }}>{{ product.product.product_name }}</a>

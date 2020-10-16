@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block header_background %} {{ product.product.media.image_full_url }} {% endblock %}
-{% block product_name %} Substituts : <a class="text-white" href="{{ product.url }}">{{ product.product }}</a> {% endblock %}
+{% block product_name %} <a class="text-white" href="{{ product.url }}">{{ product.product }}</a> {% endblock %}
 
 {% block subheader %}
 
@@ -15,7 +15,7 @@
                     <a href="{{ substitute.url }}">
                         <img src="{{ substitute.product.media.image_full_url }}" class="card-img-top" alt="Image produit" style="object-fit: cover" height="350">
                     </a>
-                    <span class="n-badge bg-primary">{{ substitute.product.nutrition.nutriscore }}</span>
+                    <span class="n-badge n-level-{{ substitute.product.nutrition.nutriscore }}">{{ substitute.product.nutrition.nutriscore }}</span>
                     <div class="card-body" style="height:110px">
                         <h3 class="results card-title">
                             <a href="{{ substitute.url }}">{{ substitute.product }}</a>
