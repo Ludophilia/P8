@@ -12,5 +12,5 @@ urlpatterns = [
     path("save", views.save, name="save"),
     path("legal", views.legal, name="legal"),
     path("myproducts", views.myproducts, name="myproducts"),
-    path("suggest", views.suggest, name="suggest")
+    # path("suggest", views.suggest, name="suggest")
 ]

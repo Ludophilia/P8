@@ -23,12 +23,11 @@ def home(request):
 def myproducts(request):
 
     myrecords = Record.objects.filter(user__exact=request.user)
-    # print(get_list_or_404(Record.objects.all()))
     myproducts = [record.substitute for record in myrecords] 
-    my_products_wrapped = wrapper(myproducts)
+    products_wrapped = wrapper(myproducts, user=request.user)
 
     vars = {'title': "Mes produits",
-            'myproducts': my_products_wrapped}
+            'products_wrapped': products_wrapped}
 
     return render(request, "my_products.html", vars)
 
@@ -40,27 +39,12 @@ def product(request):
         
         product_name = request.GET.get("query")
         product = get_object_or_404(Product, pk=product_name)
-        
+        product_wrapped = wrapper([product], user = request.user) if request.user.is_authenticated else wrapper([product])
+
         vars = {"title": "Fiche produit - {}".format(product_name),
-                "product": product}
+                "product_wrapped": product_wrapped[0]}
 
         return render(request, "product.html", vars)
-
-def suggest(request):
-
-    # Récupérer ce que le client a renvoyé
-
-    query = request.GET.get("query") 
-    
-    # Le traiter (aller chercher dans la base ce qu'il faut)
-
-    products = Product.objects.filter(product_name__istartswith=query).order_by('product_name', 'category')[0:8] 
-    suggestions = [product.product_name for product in products]
-    search_suggestions_js = json.dumps({"suggestions": suggestions}, ensure_ascii=False)
-
-    # Renvoyer les données
-
-    return HttpResponse(search_suggestions_js)
 
 def results(request):
     

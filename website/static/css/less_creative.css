@@ -1,24 +1,22 @@
-ul.errorlist.nonfield {
+/* Additition css rules */
 
-    list-style-type: none;
-    padding: 0;
-    width: 100%;
-    margin: 2rem 0;
-    font-size: 80%;
-    font-weight: bold;
-    color: #ff1e00;
-    text-align: center;
+
+/* Results Page */
+
+header.mastheadtwo {
+    padding-top: 10rem;
+    padding-bottom: 6rem;
 }
 
-/* Legal */
-
-p.legal-text > a {
-    color:rgb(0, 0, 0);
-    text-decoration: underline;
-    background-color:transparent;
+@media (max-width: 991px) {
+    h1 {
+        font-size: 1.75rem; 
+    }
+    header.mastheadtwo {
+        padding-top: 10rem;
+        padding-bottom: 5rem;
+    }  
 }
-
-/* Exclusive results page classes */
 
 .results {
     font-family: BlinkMacSystemFont, "Merriweather Sans", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -69,12 +67,75 @@ h3.results {
     background: #e64113;
 }
 
+.n-fr-level-a {
+    color: #0b8344;
+}
+
+.n-fr-level-b {
+    color: #86bb30;
+}
+
+.n-fr-level-c {
+    color: #ffcc05;
+}
+
+.n-fr-level-d {
+    color: #ee8202;
+}
+
+.n-fr-level-e {
+    color: #e64113;
+}
+
 .card {
     border: none;
 }
 
 .card-body {
     padding-left: 0px;
+}
+
+/* Product Page */
+
+@media (min-width: 992px) {
+
+    #product_img {
+        height: 500px;
+    }
+
+    #nutrition-info {
+        padding-top: 50px;
+    }
+}
+
+/* Signin Page */
+
+ul.errorlist.nonfield {
+
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    margin: 2rem 0;
+    font-size: 80%;
+    font-weight: bold;
+    color: #ff1e00;
+    text-align: center;
+}
+
+/* Legal Page */
+
+p.legal-text > a {
+    color:rgb(0, 0, 0);
+    text-decoration: underline;
+    background-color:transparent;
+}
+
+/* Menu Page */
+
+@media (min-width: 992px) {
+    .opt-icon-label {
+        display: none;
+    }
 }
 
 /* Autocomplete feature */
