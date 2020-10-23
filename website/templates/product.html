@@ -8,12 +8,12 @@
 
 <div class="container text-center" style="padding: 25px 0%">
     <div class="row justify-content-center" style="margin: 0">
-        <div class="col-lg-6 col-10 mb-4">
+        <div class="col-lg-5 col-10 mb-4">
             <a href="{{ product_wrapped.product.media.image_full_url }}">
-                <img id="product_img" src="{{ product_wrapped.product.media.image_full_url }}" alt="" width="100%" style="object-fit: cover"> 
+                <img id="product_img" src="{{ product_wrapped.product.media.image_full_url }}" alt="img_produit" width="100%"> 
             </a>
         </div>
-        <div id="nutrition-info" class="col-lg-4 col-10">
+        <div id="nutrition-info" class="col-lg-5 col-10">
             <h2 class="text-uppercase" style="font-size:20px">POUR 100g</h2>
             <p class="">
                 <strong>Nutriscore</strong> : <span class="n-fr-level-{{ product_wrapped.product.nutrition.nutriscore }}"><strong>{{ product_wrapped.product.nutrition.nutriscore|upper }}</strong></span><br/>

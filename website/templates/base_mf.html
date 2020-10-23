@@ -51,7 +51,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav my-2 my-lg-0 ml-auto">
           <form class="input-group-fake" method="GET" action="/search">
-                <input class="search-menu form-control mr-sm-2" type="search" placeholder="Produit" name="query">
+                <input class="search-menu form-control mr-sm-2" type="search" placeholder="Produit" name="query" autocomplete="off">
                 <button class="btn btn-primary d-none" type="submit" id="searchbar01">Remplacer</button>
           </form>
           <li class="nav-item">
@@ -94,7 +94,11 @@
   <footer class="bg-dark py-5">
     <div class="container">
         <div class="small text-white text-center"> Pur Beurre est une propriété de Placeholder Company</div>
-        <div class="small text-white text-center text-muted"> <a class="text-white" href="{% url "legal" %}">Mention légales</a> | <a href="mailto:contact@purbeurre.fr" class="text-white">Contact</a></div>
+        <div class="small text-white text-center text-muted"> 
+          <a class="text-white" href="{% url "legal" %}">Mention légales</a> 
+          | <a href="https://github.com/Ludophilia/P8" class="text-white">Github</a>
+          | <a href="mailto:hello@purbeurre.space" class="text-white">Contact</a>
+        </div>
       </div>
     </div>
   </footer>

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block header_background %} {{ product.product.media.image_full_url }} {% endblock %}
-{% block product_name %} <a class="text-white" href="{{ product.url }}">{{ product.product }}</a> {% endblock %}
+{% block product_name %} <a class="text-white" href="/product?query={{ product.product|urlencode }}">{{ product.product }}</a> {% endblock %}
 
 {% block subheader %}
 
@@ -12,13 +12,13 @@
             {% for substitute_wrapped in substitutes_wrapped %} 
             <div class="col-lg-4 col-10 mb-4" > 
                 <div class="card" name="{{ substitute_wrapped.product }}">
-                    <a href="{{ substitute_wrapped.url }}">
+                    <a href="/product?query={{ substitute_wrapped.product|urlencode }}">
                         <img src="{{ substitute_wrapped.product.media.image_full_url }}" class="card-img-top" alt="image produit" style="object-fit: cover" height="350">
                     </a>
                     <span class="n-badge n-level-{{ substitute_wrapped.product.nutrition.nutriscore }}"><strong>{{ substitute_wrapped.product.nutrition.nutriscore|upper }}</strong></span>
                     <div class="card-body" style="height:110px">
                         <h3 class="results card-title">
-                            <a href="{{ substitute_wrapped.url }}">{{ substitute_wrapped.product }}</a>
+                            <a href="/product?query={{ substitute_wrapped.product|urlencode }}">{{ substitute_wrapped.product }}</a>
                         </h3>
                         {% if user.is_authenticated %} 
                         <div class="card-subtitle text-muted">

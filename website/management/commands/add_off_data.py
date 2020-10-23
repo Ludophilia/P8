@@ -13,9 +13,6 @@ class Command(BaseCommand):
         
         search_pr = {"action": "process", 
         "search_terms": search_terms, 
-        "tagtype_0":"categories", 
-        "tag_contains_0":"contains", 
-        "tag_0": search_terms, 
         "sort_by": "unique_scans_n", 
         "page_size": page_size, 
         "page": page_number, 
@@ -55,12 +52,20 @@ class Command(BaseCommand):
         except:
             return False
 
+    def escape(self, string):
+        specials = list("+*?.[]()$^")
+
+        for special in specials:
+            if special in string:
+                string = string.replace(special, f"\{special}")
+
+        return string
+   
     def handle(self, *args, **options): 
         
-        products_already_in_db = list()
-        number_of_products = Product.objects.all().count() #Redondant
+        products_already_in_db = ""
         
-        if number_of_products == 0:
+        if Product.objects.count() == 0:
 
             for category in self.get_categories_from_categories_txt():
 
@@ -70,15 +75,17 @@ class Command(BaseCommand):
 
                         product_name = self.get_product_data(product, "product_name_fr")
 
-                        if product_name not in products_already_in_db: 
+                        if not re.search(fr"{self.escape(product_name)}", products_already_in_db, re.I|re.M):
                         
-                            products_already_in_db += [product_name]
+                            products_already_in_db += f"\n{product_name}"
 
                             product_entry = Product.objects.create(
                                 product_name = product_name,
                                 off_url = self.get_product_data(product, "url"), 
                                 category = category
                             )
+
+                            print(f"Produit ajouté: {product_entry}")
 
                             Media.objects.create(
                                 product = product_entry,
