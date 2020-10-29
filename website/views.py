@@ -45,11 +45,10 @@ def product(request):
 
 def results(request):
     
-    query = request.GET.get('query').strip()
-
-    product = get_object_or_404(Product, product_name__iexact=query)
+    product_name = request.GET.get('query').strip()
+    product = get_object_or_404(Product, product_name__iexact=product_name)
     substitutes = replacement_picker(product, 0, 6)
-    
+
     substitutes_wrapped = wrapper(substitutes, user = request.user) if request.user.is_authenticated else wrapper(substitutes) 
     product_wrapped = wrapper([product])[0]
 

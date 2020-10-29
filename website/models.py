@@ -1,7 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User #Pour reference de clé étrangère
-
-# Create your models here.
+from django.contrib.auth.models import User
 
 class Product(models.Model):
     product_name = models.CharField(max_length=200, primary_key=True)
@@ -28,7 +26,7 @@ class Nutrition(models.Model):
     salt_100g = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
-        return "Objet nutrition lié à {}".format(self.product.product_name)
+        return f"Nutrition<{self.product}>"
 
     class Meta:
         db_table = "nutrition"
@@ -38,10 +36,11 @@ class Media(models.Model):
     image_full_url = models.TextField() 
     image_front_url = models.TextField() 
 
+    def __str__(self):
+        return f"Media<{self.product}>"
+
     class Meta:
         db_table = "media"
-
-#Modifié, attention au modèle physique
 
 class Record(models.Model):
     record_id = models.AutoField(primary_key=True)
@@ -49,7 +48,7 @@ class Record(models.Model):
     substitute = models.ForeignKey(Product, to_field="product_name", on_delete=models.CASCADE, related_name='product_recorded_set')
 
     def __str__(self):
-        return "record_id: {}, from user: {}, product_recorded: {}".format(self.record_id, self.user, self.substitute)
+        return f"Record<{self.user},{self.substitute}>"
 
     class Meta:
         db_table = "record"
