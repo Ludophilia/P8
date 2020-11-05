@@ -9,4 +9,4 @@ class RegistrationForm(forms.Form):
 
 class SignInForm(forms.Form):
     username = forms.CharField(label='Pseudo', max_length=50)
-    password = forms.CharField(label='Mot de passe', max_length=50, widget=forms.PasswordInput())
+    password = forms.CharField(label='Mot de passe', max_length=50, widget=forms.PasswordInput(render_value=True))
