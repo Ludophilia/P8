@@ -1,4 +1,4 @@
-"""purbeurre application-level URL Configuration"""
+"""website URL Configuration"""
 
 from django.urls import path, re_path
 from . import views
@@ -13,6 +13,5 @@ urlpatterns = [
     path("logout", views.logoutv, name="logout"),
     path("save", views.save, name="save"),
     path("legal", views.legal, name="legal"),
-    path("myproducts", views.myproducts, name="myproducts"),
-    # path("suggest", views.suggest, name="suggest")
+    path("myproducts", views.myproducts, name="myproducts")
 ]
