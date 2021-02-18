@@ -12,7 +12,7 @@ function getCookie(name) {
             }
         }
     }
-    return cookieValue;
+    return cookieValue; // getCookie = (name) => document.cookie.split("; ").filter((c) => c.slice(0, name.length) === name)[0]
 }
 
 // Pour renvoyer les informations de produit au serveur 
@@ -59,23 +59,6 @@ function confirmToUser(responseText, event) {
     }
 }
 
-function urlEncodeString(string) {
-
-    conversion_table = {
-        "&":"%26",
-        ";":"%3B",
-        " ":"%20"
-    }
-
-    Object.entries(conversion_table).forEach(([sym,eqv]) => {
-        if (string.includes(sym)) {
-            string = string.replace(new RegExp(`${sym}`, "gm"), `${eqv}`)
-        }
-    })
-    
-    return string
-}
-
 var save_links = document.getElementsByClassName("save-link");
 
 for (link of save_links) {
@@ -84,8 +67,8 @@ for (link of save_links) {
 
         event.preventDefault()
         
-        var substitute_name = urlEncodeString(event.target.parentNode.parentNode.querySelector("h3").innerText)
-        var button_text_value = event.target.innerText
+        const substitute_name = event.target.dataset.url
+        const button_text_value = event.target.innerText
 
         if (button_text_value === "Sauvegarder") {
 
