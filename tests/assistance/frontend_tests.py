@@ -15,8 +15,7 @@ class AssistanceClassForSLSTC(StaticLiveServerTestCase):
 
         AssistanceClassForTC().setUp()
 
-        self.driver = ChromeDriverMgr.get_chromedriver(*("tux", "87.0.4280.88") if\
-            os.environ.get("TEST_ENV") == "TRAVIS_CI" else ("mac", "87.0.4280.88"))
+        self.driver = ChromeDriverMgr.get_chromedriver(*("tux", "87.0.4280.88") if os.environ.get("TEST_ENV") == "TRAVIS_CI" else ("mac", "87.0.4280.88"))
 
         self.f = self.driver.find_element_by_css_selector
         self.ff = self.driver.find_elements_by_css_selector
