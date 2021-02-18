@@ -14,7 +14,7 @@ from website.selection_tools import replacement_picker, wrapper
 from website.forms import RegistrationForm, SignInForm
 
 def home(request):
-    
+
     context = {'title': "P8 - Plateforme pour Amateurs de Nutella"}
         
     return render(request, "home.html", context)
@@ -35,7 +35,7 @@ def product(request):
     if request.method == "GET":
         
         product_name = request.GET.get("query")
-        product = get_object_or_404(Product, pk=product_name)
+        product = get_object_or_404(Product, pk = product_name)
         product_wrapped = wrapper([product], user = request.user) if request.user.is_authenticated else wrapper([product])
 
         context = {"title": f"Fiche produit - {product_name}", 
@@ -154,9 +154,7 @@ def account(request):
     return render(request, "account.html", context)
 
 def logoutv(request):
-
     logout(request)
-
     return redirect(reverse("home"))
 
 def legal(request):

@@ -1,0 +1,30 @@
+if: branch = master
+
+os: linux
+dist: xenial
+
+services:
+  - postgresql
+  - xvfb
+
+language: python 
+python: "3.6"
+
+addons:
+  chrome: stable
+
+install:
+  - pip install -r tests/assistance/requirements-dev.txt
+
+env: 
+  - DJANGO_SETTINGS_MODULE="purbeurre.settings.travis", TEST_ENV="TRAVIS_CI"
+
+script:
+ - ./manage.py test tests.test1_product_addition_db
+ - ./manage.py test tests.test2_product_replacement
+ - ./manage.py test tests.test3_home_page
+ - ./manage.py test tests.test4_product_page
+ - ./manage.py test tests.test5_authentication
+ - ./manage.py test tests.test6_save_function
+ - ./manage.py test tests.test7_my_products_page
+ - ./manage.py test tests.test8_legal_page
