@@ -17,7 +17,7 @@ class AssistanceClassForTC(TestCase):
         roll_dice = lambda : random.randint(*index_scope)
         all_products = Product.objects.all()
 
-        list_of_products = [all_products[roll_dice()].product_name if text_only \
-            else all_products[roll_dice()] for _ in range(amount)]
+        list_of_products = [all_products[roll_dice()].product_name.replace("  ", " ") if text_only \
+            else all_products[roll_dice()] for _ in range(amount)] # Strange bug happening here
 
         return list_of_products
