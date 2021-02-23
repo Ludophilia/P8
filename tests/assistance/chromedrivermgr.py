@@ -16,7 +16,8 @@ class ChromeDriverMgr:
         if not os.path.exists(build_path("chromedriver")):
             
             ext = {"mac": "mac64", "win": "win32", "tux": "linux64"}.get(os_name)
-            chromedriver_url = f"http://chromedriver.storage.googleapis.com/{version}/chromedriver_{ext}.zip"
+            chromedriver_url = f"http://chromedriver.storage.googleapis.com/{version}"\
+                f"/chromedriver_{ext}.zip"
 
             wget.download(chromedriver_url, build_path("chromedriver.zip"))
 

@@ -10,7 +10,7 @@ from django.http.response import HttpResponseRedirect
 from django.http import HttpResponse, Http404
 
 from website.models import Media, Product, Record
-from website.selection_tools import replacement_picker, wrapper
+from website.selection_tools import replacement_picker, wrapper, clean_query
 from website.forms import RegistrationForm, SignInForm
 
 def home(request):
@@ -18,6 +18,41 @@ def home(request):
     context = {'title': "P8 - Plateforme pour Amateurs de Nutella"}
         
     return render(request, "home.html", context)
+
+def results(request):
+    
+    query = request.GET.get("query")
+    products = Product.objects.filter(product_name__iregex=fr"^{clean_query(query)}")
+    if len(products) == 0: raise Http404
+
+    product = products.first()
+    substitutes = replacement_picker(product, 0, 6)
+
+    substitutes_wrapped = wrapper(substitutes, user = request.user) if \
+        request.user.is_authenticated else wrapper(substitutes) 
+    product_wrapped = wrapper([product])[0]
+
+    context = {'title': f"Remplacement du produit : {product}",
+               'product': product_wrapped,
+               'substitutes_wrapped': substitutes_wrapped}
+            
+    return render(request, "results.html", context)
+
+def product(request):
+
+    if request.method == "GET":
+        
+        product_name = request.GET.get("query")
+
+        product = get_object_or_404(Product, pk = product_name)
+
+        product_wrapped = wrapper([product], user = request.user) if \
+            request.user.is_authenticated else wrapper([product])
+
+        context = {"title": f"Fiche produit - {product_name}", 
+                  "product_wrapped": product_wrapped[0]}
+
+        return render(request, "product.html", context)
 
 @login_required()
 def myproducts(request):
@@ -29,34 +64,6 @@ def myproducts(request):
     context = {'title': "Mes produits", 'products_wrapped': products_wrapped}
 
     return render(request, "my_products.html", context)
-
-def product(request):
-
-    if request.method == "GET":
-        
-        product_name = request.GET.get("query")
-        product = get_object_or_404(Product, pk = product_name)
-        product_wrapped = wrapper([product], user = request.user) if request.user.is_authenticated else wrapper([product])
-
-        context = {"title": f"Fiche produit - {product_name}", 
-                  "product_wrapped": product_wrapped[0]}
-
-        return render(request, "product.html", context)
-
-def results(request):
-    
-    product_name = request.GET.get('query').strip()
-    product = get_object_or_404(Product, product_name__iexact=product_name)
-    substitutes = replacement_picker(product, 0, 6)
-
-    substitutes_wrapped = wrapper(substitutes, user = request.user) if request.user.is_authenticated else wrapper(substitutes) 
-    product_wrapped = wrapper([product])[0]
-
-    context = {'title': f"Remplacement du produit : {product}",
-               'product': product_wrapped,
-               'substitutes_wrapped': substitutes_wrapped}
-            
-    return render(request, "results.html", context)
 
 def save(request):
 
