@@ -5,6 +5,7 @@ from django.test import tag
 from tests.assistance.frontend_tests import AssistanceClassForSLSTC
 from website.models import Product
 
+@tag("t3")
 @tag("t3a")
 class TestProductReplacementFunction(AssistanceClassForSLSTC):
 
@@ -35,19 +36,20 @@ class TestProductReplacementFunction(AssistanceClassForSLSTC):
 
             self.driver.get(f"{self.live_server_url}") 
 
-    @tag("t3a-p2")
-    def test_if_404_is_correctly_raised(self):
+    # @tag("t3a-p2")
+    # def test_if_404_is_correctly_raised(self): # Research field is more permissive, so there is no more errors like that
         
-        print("\nTest 3a - (2/2) : l'utilisateur est-il bien redirigé vers une page d'erreur en cas de requête invalide ?\n")
+    #     print("\nTest 3a - (2/2) : l'utilisateur est-il bien redirigé vers une page d'erreur en cas de requête invalide ?\n")
 
-        searchbox = self.driver.find_element_by_name("query")
-        searchbox.send_keys("orangin")
-        searchbox.submit()
-        time.sleep(1)
+    #     searchbox = self.driver.find_element_by_name("query")
+    #     searchbox.send_keys("orangin")
+    #     searchbox.submit()
+    #     time.sleep(1)
 
-        error = self.driver.find_element_by_css_selector("h1").text
-        self.assertEqual(error,"Not Found") #En mode débug s'entend
+    #     error = self.driver.find_element_by_css_selector("h1").text
+    #     self.assertEqual(error,"Not Found") #En mode débug s'entend
 
+@tag("t3")
 @tag("t3b")
 class TestNavBarBehaviorWhenNotConnected(AssistanceClassForSLSTC):
 
@@ -63,6 +65,7 @@ class TestNavBarBehaviorWhenNotConnected(AssistanceClassForSLSTC):
         connect_logo = self.driver.find_element_by_css_selector(".fas.fa-user")
         self.assertEqual(connect_logo.text, "Se connecter")
 
+@tag("t3")
 @tag("t3c")
 class TestNavBarBehaviorWhenConnected(AssistanceClassForSLSTC):
 
