@@ -79,7 +79,8 @@ class AssistanceClassForSLSTC(StaticLiveServerTestCase):
         save_links = self.driver.find_elements_by_css_selector(".save-link") or \
             self.driver.find_elements_by_css_selector(".con-link")
 
-        if index == -1 : index = random.randint(0, len(title_links)-1)
+        if index == -1 : index = random.randint(0, len(title_links)-1 if\
+             len(title_links) > 0 else 3)
 
         return title_links[index], save_links[index]
 
