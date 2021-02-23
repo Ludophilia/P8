@@ -37,7 +37,7 @@ class TestProductReplacementFunction(AssistanceClassForSLSTC):
             self.driver.get(f"{self.live_server_url}") 
 
     # @tag("t3a-p2")
-    # def test_if_404_is_correctly_raised(self): # Research field is more permissive, so there is no more errors like that
+    # def test_if_404_is_correctly_raised(self): # search field is more permissive, so there is no more errors like that
         
     #     print("\nTest 3a - (2/2) : l'utilisateur est-il bien redirigé vers une page d'erreur en cas de requête invalide ?\n")
 

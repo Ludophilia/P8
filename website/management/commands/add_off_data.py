@@ -34,7 +34,11 @@ class OFFAPIManager:
     def __are_values_missing(cls, product: dict) -> bool: 
 
         try:
-            if len(product["product_name_fr"]) != 0 and len(product["nutrition_grade_fr"]) != 0 and len(product["image_front_url"])!= 0 and product["nutriments"]["energy_100g"] >= 0:
+            product_name, nutriscore = product["product_name_fr"], product["nutrition_grade_fr"]
+            product_img, energy_100g = product["image_front_url"], product["nutriments"]["energy_100g"]
+
+            if len(product_name) != 0 and not re.search(r"\s{2, 50}", product_name) and\
+              len(nutriscore)!= 0 and len(product_img)!= 0 and energy_100g >= 0:
                 return False
         except:
             pass
@@ -44,10 +48,12 @@ class OFFAPIManager:
     @classmethod
     def get_product_data(cls, product: dict, key: str) -> str:
         
-        top_keys = ["category", "product_name_fr", "url", "nutrition_grade_fr", "image_full_url", "image_front_url"]
+        top_keys = ["category", "product_name_fr", "url", "nutrition_grade_fr", "image_full_url", 
+        "image_front_url"]
         try:
             if key in top_keys:
-                return product[key] if key != "image_full_url" else product["image_front_url"].replace(".400.jpg", ".full.jpg")
+                return product[key] if key != "image_full_url" else\
+                    product["image_front_url"].replace(".400.jpg", ".full.jpg")
             else:
                 return str(product["nutriments"][key])
         except (KeyError):
@@ -78,14 +84,16 @@ class DBManager:
     @staticmethod
     def check_data_already_in_db() -> None:
         
-        print(f"\n{time.strftime('%a %d/%m/%Y, %X')}: Vérification des données de produit dans la BDD...")
+        print(f"\n{time.strftime('%a %d/%m/%Y, %X')}: Vérification des données de produit "\
+            "dans la BDD...")
         
         products = Product.objects.all()
         deletions = 0
 
         if products.count() > 0:
 
-            print(f"...{products.count()} produit(s) trouvés...\n...suppression des données corrompues...")
+            print(f"...{products.count()} produit(s) trouvés...\n...suppression "\
+                "des données corrompues...")
 
             for product in products:
                 r = requests.get(product.off_url)
@@ -112,8 +120,10 @@ class DBManager:
 
         if type_data == "nutrition_data":
             for nutriment in Nutrition.objects.all():
-                print("Nutrition:", nutriment.product, nutriment.nutriscore, nutriment.energy_100g, nutriment.energy_unit,
-                nutriment.proteins_100g, nutriment.fat_100g, nutriment.saturated_fat_100g, nutriment.carbohydrates_100g, nutriment.sugars_100g, nutriment.fiber_100g, nutriment.salt_100g)
+                print("Nutrition:", nutriment.product, nutriment.nutriscore, 
+                nutriment.energy_100g, nutriment.energy_unit, nutriment.proteins_100g, 
+                nutriment.fat_100g, nutriment.saturated_fat_100g, nutriment.carbohydrates_100g, 
+                nutriment.sugars_100g, nutriment.fiber_100g, nutriment.salt_100g)
 
     @classmethod
     def __create_or_update_product_data(cls, product: dict) -> (Product, bool):

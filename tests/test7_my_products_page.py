@@ -12,7 +12,8 @@ class TestMyProductPage(AssistanceClassForSLSTC):
     @tag("t7-p1")
     def test_if_the_page_displays_correctly_only_to_logged_users(self):
         
-        print("\nTest 7 - (1/3) : La page 'Mes produits' ne s'affiche-t-elle qu'aux utilisateurs authentitifiées ?\n")
+        print("\nTest 7 - (1/3) : La page 'Mes produits' ne s'affiche-t-elle qu'aux "\
+            "utilisateurs authentitifiées ?\n")
 
         self.client = Client()
         luser = self.get_or_create_luser()
@@ -29,7 +30,8 @@ class TestMyProductPage(AssistanceClassForSLSTC):
     @tag("t7-p2")
     def test_if_the_products_saved_by_the_user_are_displayed_correctly(self):
 
-        print("\nTest 7 - (2/3) : Les produits enregistrés par l'utilisateur s'affichent-ils bien sur la page 'Mes Produits' ?\n")
+        print("\nTest 7 - (2/3) : Les produits enregistrés par l'utilisateur "\
+            "s'affichent-ils bien sur la page 'Mes Produits' ?\n")
 
         products = self.authenticate_luser_and_save_some_products(10, True)
         self.driver.get(f"{self.live_server_url}/myproducts")
@@ -40,7 +42,8 @@ class TestMyProductPage(AssistanceClassForSLSTC):
     @tag("t7-p3")
     def test_if_clicking_on_the_save_button_on_the_page_still_remove_the_product(self):
         
-        print("\nTest 7 - (3/3) : Le bouton de sauvegarde sur la page 'Mes Produits' fonctionne-t-il ?\n")
+        print("\nTest 7 - (3/3) : Le bouton de sauvegarde sur la page 'Mes Produits' "\
+            "fonctionne-t-il ?\n")
 
         products = self.authenticate_luser_and_save_some_products(8, True)
 
